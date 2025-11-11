@@ -1,386 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deployment Timeline Prototype</title>
-    <!-- 1. Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. Configure Tailwind & Load Inter Font -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    // Add a max-height for the transition
-                    maxHeight: {
-                        '0': '0',
-                        'screen-3/4': '75vh',
-                        'screen': '100vh',
-                        '[1000px]': '1000px', // A large fixed value for transition
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- 3. Custom Styles for Timeline & Animations -->
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeAgentDiary · Deployment Records</title>
 
-        /* Style for the vertical timeline line */
-        .timeline-line {
-            position: absolute;
-            left: 1.25rem; /* Corresponds to left-5 in Tailwind */
-            top: 1rem;     /* Start below the first dot's top */
-            bottom: 0;
-            width: 3px;
-            background-color: #374151; /* gray-700 */
-            z-index: 0;
-        }
-        
-        /* Ensure the last item's line doesn't overflow */
-        .timeline-item:last-child .timeline-line {
-            display: none;
-        }
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            paper: '#f9fafb',
+            ink: '#111827'
+          },
+        },
+      },
+    };
+  </script>
 
-        /* Styling for the collapsible content */
-        .collapsible-content {
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-in-out;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-        
-        .collapsible-content.expanded {
-            max-height: 1000px; /* Use the large fixed value */
-            opacity: 1;
-        }
-
-        /* Chevron icon rotation */
-        .chevron-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .card-trigger.expanded .chevron-icon {
-            transform: rotate(180deg);
-        }
-    </style>
+  <style>
+    .timeline-line {
+      position: absolute;
+      left: 1rem;
+      top: 1.5rem;
+      bottom: 0;
+      width: 2px;
+      background-color: rgba(148, 163, 184, 0.3);
+    }
+    .collapsible-content {
+      transition: max-height 0.5s ease, opacity 0.4s ease;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+    .collapsible-content.expanded {
+      max-height: 1000px;
+      opacity: 1;
+    }
+    .chevron-icon {
+      transition: transform 0.3s ease;
+    }
+    .card-trigger.expanded .chevron-icon {
+      transform: rotate(180deg);
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased">
 
-    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
-        <header class="mb-12">
-            <h1 class="text-4xl font-bold text-white">Deployment History</h1>
-            <p class="text-lg text-slate-400 mt-2">A scrollable timeline of our recent project deployments.</p>
-        </header>
+<body class="bg-gray-100 text-ink dark:bg-gray-900 dark:text-gray-100 font-sans antialiased">
+  <div class="container mx-auto max-w-4xl p-6">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">LeAgentDiary</h1>
+      <p class="text-lg text-gray-500 dark:text-gray-400 mt-2">
+        Deployment Records & Agentic Contributions
+      </p>
+    </header>
 
-        <!-- 
-          Timeline Wrapper
-          'relative' is needed for the absolute-positioned timeline line
-        -->
-        <div id="timeline-wrapper" class="relative">
-            <!-- The vertical line will be added here by JS for the first item, 
-                 but we can also add a static one if we want.
-                 Let's add it inside each item instead.
-            -->
-        </div>
+    <div id="timeline-wrapper" class="relative">
+      <!-- Cards will render here -->
     </div>
+  </div>
 
-    <script>
-        // --- 1. MOCK DATA ---
-        // This data is structured *exactly* like the 'deploymentEntrySchema'
-        // from 'vercelDeploymentSchema.mjs' in your project.
-        const mockDeployments = [
-            {
-                id: 'dpl_abc123',
-                projectId: 'prj_xyz789',
-                url: 'https://htdi-project-abc123-team.vercel.app',
-                readyState: 'READY',
-                createdAt: '2025-11-08T18:30:00.000Z',
-                git: {
-                    provider: 'github',
-                    branch: 'main',
-                    commitSha: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
-                    commitMessage: 'feat: Implement agentic documentation workflow',
-                    commitAuthorName: 'Jane Doe',
-                    commitAuthorAvatar: 'https://placehold.co/40x40/6366f1/white?text=JD'
-                },
-                links: {
-                    deployment: 'https://htdi-project-abc123-team.vercel.app',
-                    insights: 'https://vercel.com/team/htdi-project/insights',
-                    gitCommit: 'https://github.com/team/htdi-project/commit/a1b2c3d4e5f6'
-                },
-                metadata: {
-                    deploymentName: 'htdi-project',
-                    target: 'production',
-                    source: 'git'
-                }
-            },
-            {
-                id: 'dpl_def456',
-                projectId: 'prj_xyz789',
-                url: 'https://htdi-project-git-fork-feat-new-ui-team.vercel.app',
-                readyState: 'READY',
-                createdAt: '2025-11-08T14:15:00.000Z',
-                git: {
-                    provider: 'github',
-                    branch: 'feat/new-ui',
-                    commitSha: 'b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3',
-                    commitMessage: 'fix: Adjust card component layout on mobile',
-                    commitAuthorName: 'Alex Smith',
-                    commitAuthorAvatar: 'https://placehold.co/40x40/ec4899/white?text=AS'
-                },
-                links: {
-                    deployment: 'https://htdi-project-git-fork-feat-new-ui-team.vercel.app',
-                    insights: 'https://vercel.com/team/htdi-project/insights',
-                    gitCommit: 'https://github.com/team/htdi-project/commit/b2c3d4e5f6'
-                },
-                metadata: {
-                    deploymentName: 'htdi-project',
-                    target: 'preview',
-                    source: 'git'
-                }
-            },
-            {
-                id: 'dpl_ghi789',
-                projectId: 'prj_xyz789',
-                url: 'https://htdi-project-git-fork-chore-deps-team.vercel.app',
-                readyState: 'READY',
-                createdAt: '2025-11-07T22:05:00.000Z',
-                git: {
-                    provider: 'github',
-                    branch: 'chore/deps',
-                    commitSha: 'c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4',
-                    commitMessage: 'chore: Update core dependencies',
-                    commitAuthorName: 'Jane Doe',
-                    commitAuthorAvatar: 'https://placehold.co/40x40/6366f1/white?text=JD'
-                },
-                links: {
-                    deployment: 'https://htdi-project-git-fork-chore-deps-team.vercel.app',
-                    insights: 'https://vercel.com/team/htdi-project/insights',
-                    gitCommit: 'https://github.com/team/htdi-project/commit/c3d4e5f6'
-                },
-                metadata: {
-                    deploymentName: 'htdi-project',
-                    target: 'preview',
-                    source: 'git'
-                }
-            },
-            {
-                id: 'dpl_jkl012',
-                projectId: 'prj_xyz789',
-                url: 'https://htdi-project-abc123-team.vercel.app',
-                readyState: 'READY',
-                createdAt: '2025-11-07T09:00:00.000Z',
-                git: {
-                    provider: 'github',
-                    branch: 'main',
-                    commitSha: 'd4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5',
-                    commitMessage: 'Initial project setup',
-                    commitAuthorName: 'Jane Doe',
-                    commitAuthorAvatar: 'https://placehold.co/40x40/6366f1/white?text=JD'
-                },
-                links: {
-                    deployment: 'https://htdi-project-abc123-team.vercel.app',
-                    insights: 'https://vercel.com/team/htdi-project/insights',
-                    gitCommit: 'https://github.com/team/htdi-project/commit/d4e5f6'
-                },
-                metadata: {
-                    deploymentName: 'htdi-project',
-                    target: 'production',
-                    source: 'git'
-                }
-            }
-        ];
-
-        // --- 2. UTILITY FUNCTIONS ---
-
-        /**
-         * Formats an ISO date string into a readable format.
-         * e.g., "November 8, 2025 at 6:30 PM"
-         */
-        function formatTimestamp(isoString) {
-            const date = new Date(isoString);
-            return date.toLocaleString('en-US', {
-                dateStyle: 'long',
-                timeStyle: 'short'
-            });
+  <script>
+    const mockDeployments = [
+      {
+        id: "dpl_001",
+        createdAt: "2025-11-09T18:00:00Z",
+        git: {
+          branch: "main",
+          commitMessage: "feat: add agent memory caching",
+          commitAuthorName: "Jane Doe",
+          commitAuthorAvatar: "https://placehold.co/40x40/6366f1/white?text=JD"
+        },
+        metadata: { target: "production" },
+        links: {
+          gitCommit: "#",
+          deployment: "#"
         }
-
-        /**
-         * Creates an HTML badge based on the deployment target.
-         */
-        function createTargetBadge(target) {
-            if (target === 'production') {
-                return `<span class="inline-block bg-green-500/20 text-green-300 text-xs font-medium px-2.5 py-0.5 rounded-full">Production</span>`;
-            }
-            return `<span class="inline-block bg-blue-500/20 text-blue-300 text-xs font-medium px-2.5 py-0.5 rounded-full">Preview</span>`;
+      },
+      {
+        id: "dpl_002",
+        createdAt: "2025-11-07T14:00:00Z",
+        git: {
+          branch: "feat/new-ui",
+          commitMessage: "ui: improved collapsible card design",
+          commitAuthorName: "Alex Smith",
+          commitAuthorAvatar: "https://placehold.co/40x40/ec4899/white?text=AS"
+        },
+        metadata: { target: "preview" },
+        links: {
+          gitCommit: "#",
+          deployment: "#"
         }
+      }
+    ];
 
-        // --- 3. RENDER FUNCTION ---
+    function formatTimestamp(iso) {
+      return new Date(iso).toLocaleString('en-US', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
+    }
 
-        /**
-         * Creates the HTML for a single timeline item (card).
-         */
-        function createTimelineCard(deployment) {
-            const { id, createdAt, git, metadata, links } = deployment;
-            
-            // This is the "unfoldable" content you requested
-            const collapsibleHTML = `
-                <div class="collapsible-content">
-                    <!-- Media (Image or Video) -->
-                    <div class="p-4 border-t border-slate-700">
-                        <img 
-                            src="https://placehold.co/1600x900/1e293b/94a3b8?text=Deployment+Preview" 
-                            alt="Deployment Preview"
-                            class="rounded-lg object-cover aspect-video w-full"
-                            onerror="this.src='https://placehold.co/1600x900/1e293b/94a3b8?text=Preview+Not+Available'"
-                        >
-                    </div>
+    function createBadge(target) {
+      const map = {
+        production: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        preview: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      };
+      return `<span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full ${map[target] || ''}">${target}</span>`;
+    }
 
-                    <!-- Agentic Documentation -->
-                    <div class="p-4 border-t border-slate-700">
-                        <h4 class="text-lg font-semibold text-white mb-2">Agentic Documentation</h4>
-                        <p class="text-slate-300 text-sm leading-relaxed">
-                            This deployment introduced a new workflow for the 'DocuWriter' agent. 
-                            It now automatically scans commit messages for 'docs:' prefixes and 
-                            updates the relevant Confluence pages. The 'QA-Bot' agent has also been 
-                            updated to verify these documentation changes.
-                        </p>
-                    </div>
+    function createCard(entry) {
+      const { id, createdAt, git, metadata, links } = entry;
 
-                    <!-- Team of Agents -->
-                    <div class="p-4 border-t border-slate-700">
-                        <h4 class="text-lg font-semibold text-white mb-3">Team of Agents</h4>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex -space-x-2 overflow-hidden">
-                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-slate-800" src="https://placehold.co/40x40/f87171/white?text=DW" alt="DocuWriter Agent" title="DocuWriter">
-                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-slate-800" src="https://placehold.co/40x40/34d399/white?text=QA" alt="QA-Bot Agent" title="QA-Bot">
-                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-slate-800" src="https://placehold.co/40x40/fbbf24/white?text=CI" alt="CI-Sentinel Agent" title="CI-Sentinel">
-                            </div>
-                            <span class="text-sm text-slate-400">3 Agents collaborated on this deployment.</span>
-                        </div>
-                    </div>
+      const inner = `
+        <div class="collapsible-content">
+          <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              This deployment included updates for agent integration, stability, and self-reflection tracking.
+            </p>
+          </div>
+          <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-between text-sm">
+            <div class="flex items-center space-x-2">
+              <img src="${git.commitAuthorAvatar}" class="h-6 w-6 rounded-full" alt="">
+              <span>${git.commitAuthorName}</span>
+            </div>
+            <div class="space-x-4">
+              <a href="${links.gitCommit}" class="text-blue-500 hover:underline">View Commit</a>
+              <a href="${links.deployment}" class="text-green-500 hover:underline">Visit Site</a>
+            </div>
+          </div>
+        </div>
+      `;
 
-                    <!-- Footer / Links -->
-                    <div class="p-4 bg-slate-800/50 border-t border-slate-700 rounded-b-lg flex items-center justify-between space-x-4">
-                        <div class="flex items-center space-x-2">
-                            <img class="h-6 w-6 rounded-full" src="${git.commitAuthorAvatar || 'https://placehold.co/40x40/94a3b8/white?text=?'}" alt="Author">
-                            <span class="text-sm text-slate-300">${git.commitAuthorName}</span>
-                        </div>
-                        <div class="flex items-center space-x-4 text-sm">
-                            <a href="${links.gitCommit}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 hover:underline">View Commit</a>
-                            <a href="${links.deployment}" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:text-green-300 hover:underline">Visit Site</a>
-                        </div>
-                    </div>
+      return `
+        <div class="timeline-item relative pb-10">
+          <div class="timeline-line"></div>
+          <div class="absolute left-4 top-3.5 w-3 h-3 bg-blue-400 rounded-full"></div>
+          <div class="ml-10">
+            <time class="text-xs text-gray-500 dark:text-gray-400">${formatTimestamp(createdAt)}</time>
+            <div class="mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm transition hover:shadow-md">
+              <div class="card-trigger p-4 flex justify-between items-center cursor-pointer" data-toggle="card">
+                <div class="flex flex-col">
+                  <div class="flex items-center space-x-2">
+                    ${createBadge(metadata.target)}
+                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">${git.branch}</span>
+                  </div>
+                  <p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate mt-1">${git.commitMessage}</p>
                 </div>
-            `;
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </div>
+              ${inner}
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
-            // This is the main card structure
-            return `
-                <div class="timeline-item relative pb-10">
-                    <!-- This is the vertical line -->
-                    <div class="timeline-line"></div>
+    function renderTimeline(data) {
+      const wrap = document.getElementById("timeline-wrapper");
+      wrap.innerHTML = data.map(createCard).join("");
+    }
 
-                    <!-- This is the timestamp 'dot' on the line -->
-                    <div class="timeline-dot absolute left-5 top-3.5 -translate-x-1/2 w-4 h-4 rounded-full bg-blue-500 border-4 border-slate-900 z-10"></div>
-                    
-                    <!-- This is the card content, offset from the line -->
-                    <div class="ml-12">
-                        <!-- Timestamp -->
-                        <time class="text-sm font-medium text-blue-300">${formatTimestamp(createdAt)}</time>
-                        
-                        <!-- The "Big Deployment Card" -->
-                        <div class="mt-2 bg-slate-800 shadow-xl rounded-lg overflow-hidden ring-1 ring-slate-700/50">
-                            <!-- Clickable Header to Unfold -->
-                            <div class="card-trigger p-4 cursor-pointer hover:bg-slate-700/50" data-toggle="card" data-target="#card-${id}">
-                                <div class="flex justify-between items-center">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center space-x-3">
-                                            ${createTargetBadge(metadata.target)}
-                                            <span class="text-sm font-semibold text-slate-400">${git.branch}</span>
-                                        </div>
-                                        <p class="text-lg font-semibold text-white truncate mt-1.5">${git.commitMessage}</p>
-                                    </div>
-                                    
-                                    <!-- Chevron Icon -->
-                                    <svg class="chevron-icon w-5 h-5 text-slate-400 ml-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                    </svg>
-                                </div>
-                            </div>
-                            
-                            <!-- Collapsible Content -->
-                            ${collapsibleHTML}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        /**
-         * Renders all deployments into the timeline.
-         */
-        function renderTimeline(deployments) {
-            const wrapper = document.getElementById('timeline-wrapper');
-            if (!wrapper) return;
-            
-            // Sort by date, newest first
-            const sortedDeployments = deployments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            wrapper.innerHTML = sortedDeployments.map(createTimelineCard).join('');
-        }
-        
-        // --- 4. EVENT LISTENERS ---
-        
-        /**
-         * Handles clicks to expand/collapse cards.
-         */
-        function setupToggleListeners() {
-            document.getElementById('timeline-wrapper').addEventListener('click', function(e) {
-                const trigger = e.target.closest('[data-toggle="card"]');
-                if (!trigger) return;
+    function setupToggles() {
+      document.getElementById("timeline-wrapper").addEventListener("click", (e) => {
+        const trigger = e.target.closest("[data-toggle='card']");
+        if (!trigger) return;
+        const content = trigger.parentElement.querySelector(".collapsible-content");
+        trigger.classList.toggle("expanded");
+        content.classList.toggle("expanded");
+      });
+    }
 
-                e.preventDefault();
-                
-                // Find the collapsible content within the same card
-                const content = trigger.nextElementSibling;
-                
-                if (content && content.classList.contains('collapsible-content')) {
-                    // Toggle the 'expanded' class on both the trigger and the content
-                    trigger.classList.toggle('expanded');
-                    content.classList.toggle('expanded');
-                }
-            });
-        }
-
-        // --- 5. INITIALIZATION ---
-        
-        /**
-         * Simulates fetching data and initializes the app.
-         */
-        async function initializeApp() {
-            // In a real app:
-            // const response = await fetch('/api/vercel-deployments');
-            // const data = await response.json();
-            // renderTimeline(data.data);
-            
-            // For this prototype, we'll use the mock data
-            renderTimeline(mockDeployments);
-            
-            // Set up the click listeners
-            setupToggleListeners();
-        }
-
-        // Run the app once the DOM is loaded
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
-    </script>
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTimeline(mockDeployments);
+      setupToggles();
+    });
+  </script>
 </body>
 </html>
