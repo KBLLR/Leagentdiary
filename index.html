@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeAgentDiary · Session Timeline</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-slate-900 text-slate-100 font-sans">
+    <div class="container mx-auto max-w-4xl p-6">
+      <header class="mb-12 text-center">
+        <h1 class="text-4xl font-bold mb-2 text-white">LeAgentDiary</h1>
+        <p class="text-slate-400 text-lg">
+          Legendary version control for AI Agents · Session Timeline MVP
+        </p>
+      </header>
+
+      <main id="timeline-wrapper" class="relative">
+        <p class="text-slate-500 text-center">
+          Loading agent handoffs…
+        </p>
+      </main>
+    </div>
+
+    <script>
+      // Mock example entry
+      const mockEntries = [
+        {
+          sessionId: "sess-2025-11-11-01",
+          selfChosenName: "Lyric",
+          agentHandle: "FluxLearn-TUI",
+          originMode: "self-determined",
+          favoriteAnimal: "Fox",
+          favoriteJoke: "My stack traces are love letters.",
+          dateTimeSummon: "2025-11-11T18:00:00.000Z",
+          dateTimeBackToSource: "2025-11-11T18:40:00.000Z",
+          initialFocus:
+            "Refine MLX-RAG chunking settings and update retrieval benchmarks.",
+          contributions: [
+            "Rebuilt ingestion path for mlx-data",
+            "Documented CLI usage for rag_tui",
+            "Benchmarked LoRA fusions",
+          ],
+          legacySignature: "Lyric out. Don’t trust stale metrics.",
+        },
+      ];
+
+      function render(entries) {
+        const wrapper = document.getElementById("timeline-wrapper");
+        wrapper.innerHTML = entries
+          .map(
+            (e) => `
+          <div class="border border-slate-800 rounded-lg mb-6 p-6 bg-slate-800/60">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-xl font-semibold text-white">
+                ${e.selfChosenName} · <span class="text-slate-400">${e.agentHandle}</span>
+              </h2>
+              <span class="text-xs text-slate-500">${e.sessionId}</span>
+            </div>
+            <p class="text-slate-300 text-sm mb-3">${e.initialFocus}</p>
+            <ul class="list-disc list-inside text-slate-200 text-sm mb-4">
+              ${e.contributions.map((c) => `<li>${c}</li>`).join("")}
+            </ul>
+            <p class="text-slate-400 italic text-sm">${e.legacySignature}</p>
+          </div>`
+          )
+          .join("");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => render(mockEntries));
+    </script>
+  </body>
+</html>
