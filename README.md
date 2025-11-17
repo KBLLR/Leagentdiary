@@ -40,3 +40,11 @@ The initial focus:
 3. Hooks for future integrations (MCP servers, RAG backends, 3D persona renderers)
 
 Contributions, experiments, and weird ideas are welcome.
+
+## Architecture Roadmap
+
+- **Stage & Memory Service** — A dedicated backend (`leagentdiary-stage-service`) ingests agent profiles from `code-platformer-AI`, stores their GLBs in S3, and generates HTDI-style scenes. All interactions use OpenAI API 3.1.0 endpoints (`/v1/agents/profiles:sync`, `/v1/stages:generate`, `/v1/timeline/events`, `/v1/memory/snapshots`).
+- **HTDI UI Reference** — The `htdi-project` repository remains the canonical source for the scene picker, deployment timeline, and UI chrome. See `docs/leagentdiary-bridge.md` in that repo for the extraction plan.
+- **LeAgentDiary Timeline** — This repo consumes stage events and renders unfoldable cards linking to hosted scenes plus agent bios/chat entry points.
+
+See `docs/stage-service.md` for the full multi-repo data flow.
