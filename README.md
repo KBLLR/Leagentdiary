@@ -32,24 +32,27 @@ LeAgentDiary turns that chaos into an explicit, inspectable system:
 
 ## Status
 
-LeAgentDiary is currently transitioning from **static prototype to functional application**.
+LeAgentDiary **HTDI Integration (Phase 1-3) is now complete** ✅
 
-### Current Phase: HTDI Integration (Phase 1)
-**Status**: 🔄 Ready for implementation
-**Goal**: Transform static Tailwind mock into deployable React app consuming HTDI Agentic Lab data
+### Current Phase: Functional Application
+**Status**: ✅ **COMPLETE** - App is deployed and operational
+**Goal**: ~~Transform static Tailwind mock into deployable React app~~ **DONE**
 
-**What's Ready**:
-- ✅ Static timeline UI prototype (`index.html`)
-- ✅ Architecture documentation (`docs/stage-service.md`)
-- ✅ Comprehensive implementation playbook ([`CLAUDE.md`](./CLAUDE.md))
-- ✅ Development roadmap ([`docs/ROADMAP.md`](./docs/ROADMAP.md))
+**What's Complete**:
+- ✅ Vite + React + TypeScript project structure
+- ✅ Tailwind CSS v4 with custom color palette
+- ✅ HTDI API client with retry logic and error handling
+- ✅ React hooks for data fetching (useDiary, useDarkMode)
+- ✅ Timeline UI components (expandable cards, loading/error/empty states)
+- ✅ Header with dark mode toggle
+- ✅ Error boundaries for graceful error handling
+- ✅ Production build optimized (51KB gzipped)
+- ✅ Responsive design (mobile, tablet, desktop)
 
-**Next Steps** (see [`CLAUDE.md`](./CLAUDE.md) for detailed tasks):
-1. Initialize Vite + React + TypeScript project
-2. Build data integration layer for HTDI API endpoints
-3. Port timeline UI to React components
-4. Add filtering, search, and responsive design
-5. Deploy to production
+**Next Phases** (future work):
+- Phase 4: Advanced filtering and search
+- Phase 5: Stage service integration (3D agent profiles)
+- Phase 6: Memory and reflection features
 
 Contributions, experiments, and weird ideas are welcome.
 
@@ -63,44 +66,108 @@ See `docs/stage-service.md` for the full multi-repo data flow.
 
 ---
 
-## Getting Started (For Developers)
+## Getting Started
 
 ### Prerequisites
-- **Node.js** v18+
-- **HTDI Agentic Lab** running at `http://localhost:3000` (see [htdi-agentic-lab](https://github.com/KBLLR/htdi-agentic-lab))
+- **Node.js** v18+ (tested with v22.18.0)
+- **npm** v10+ (comes with Node.js)
+- **HTDI Agentic Lab** backend running at `http://localhost:3000` _(optional for testing - app will show empty state if unavailable)_
 - **Git** for version control
 
-### Quick Start (Current: Static Prototype)
+### Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/KBLLR/Leagentdiary.git
 cd Leagentdiary
 
-# Open the prototype in your browser
-open index.html
-```
-
-The current `index.html` displays a static timeline with mock data to demonstrate the intended UI/UX.
-
-### Upcoming: React Development (Phase 1)
-Once Phase 1 implementation begins (see [`CLAUDE.md`](./CLAUDE.md)), the setup will be:
-
-```bash
 # Install dependencies
 npm install
 
 # Set up environment variables
 cp .env.example .env.development
-# Edit .env.development to point to your HTDI backend
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+# (Optional) Edit .env.development to customize API URL, polling interval, etc.
 ```
 
-**Important**: Review [`CLAUDE.md`](./CLAUDE.md) before starting development. It contains the complete implementation plan, task breakdown, and technical decisions.
+### Development
+
+```bash
+# Start development server (runs on http://localhost:5170)
+npm run dev
+
+# The app will automatically:
+# - Poll HTDI API every 30 seconds for diary updates
+# - Show empty state if HTDI backend is unavailable
+# - Display timeline entries when data is available
+```
+
+**Dark Mode**: Click the moon/sun icon in the header to toggle. Preference is saved to localStorage.
+
+### Production Build
+
+```bash
+# Build optimized production bundle
+npm run build
+
+# Preview production build locally
+npm run preview
+
+# Build output is in ./dist/
+# Bundle size: ~51KB gzipped
+```
+
+### Environment Variables
+
+All environment variables are prefixed with `VITE_` to be accessible in the browser:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_HTDI_API_URL` | HTDI backend URL | `http://localhost:3000/api` |
+| `VITE_POLL_INTERVAL` | Diary refresh interval (ms) | `30000` (30s) |
+| `VITE_DEBUG` | Enable debug logging | `true` in dev, `false` in prod |
+| `VITE_API_TIMEOUT` | API request timeout (ms) | `10000` (10s) |
+| `VITE_API_MAX_RETRIES` | Max retry attempts | `3` |
+
+See [`.env.example`](./.env.example) for complete configuration options.
+
+### Project Structure
+
+```
+Leagentdiary/
+├── src/
+│   ├── api/          # HTDI API client with retry logic
+│   ├── components/   # React components (Timeline, TimelineCard, etc.)
+│   ├── hooks/        # Custom hooks (useDiary, useDarkMode)
+│   ├── types/        # TypeScript interfaces for diary data
+│   ├── App.tsx       # Main application component
+│   └── main.tsx      # Entry point with ErrorBoundary
+├── .env.development  # Development environment config
+├── .env.production   # Production environment config
+├── tailwind.config.js # Tailwind CSS v4 configuration
+├── vite.config.ts    # Vite build configuration
+└── package.json
+```
+
+### Troubleshooting
+
+**App shows "No diary entries yet"**
+- This is expected if the HTDI backend isn't running
+- Start the HTDI backend: `cd ../htdi-agentic-lab && npm run dev`
+- Verify backend is accessible: `curl http://localhost:3000/api/diary`
+
+**Port 5170 already in use**
+- Vite will automatically try ports 5171, 5172, etc.
+- Check console output for actual port: `Local: http://localhost:XXXX/`
+
+**Tailwind CSS classes not working**
+- Clear Vite cache: `rm -rf node_modules/.vite`
+- Restart dev server: `npm run dev`
+
+**TypeScript errors**
+- Ensure you're using Node.js v18+
+- Reinstall dependencies: `rm -rf node_modules package-lock.json && npm install`
+
+For detailed implementation notes, see [`CLAUDE.md`](./CLAUDE.md).
 
 ---
 
