@@ -4,6 +4,7 @@
 
 export {
   fetchDiary,
+  fetchAgents,
   triggerParse,
   runCommand,
   launchAutopilot,

@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { fetchDiary } from '../api'
-import type { DiaryEntry } from '../types'
+import type { DiarySession } from '../types'
 
 const DEFAULT_POLL_INTERVAL = Number(import.meta.env.VITE_POLL_INTERVAL) || 30000
 const DEBUG = import.meta.env.VITE_DEBUG === 'true'
@@ -13,11 +13,11 @@ interface UseDiaryOptions {
   pollInterval?: number
   autoFetch?: boolean
   onError?: (error: Error) => void
-  onSuccess?: (data: DiaryEntry[]) => void
+  onSuccess?: (data: DiarySession[]) => void
 }
 
 interface UseDiaryReturn {
-  data: DiaryEntry[]
+  data: DiarySession[]
   loading: boolean
   error: Error | null
   refresh: () => Promise<void>
@@ -35,7 +35,7 @@ export function useDiary(options: UseDiaryOptions = {}): UseDiaryReturn {
     onSuccess,
   } = options
 
-  const [data, setData] = useState<DiaryEntry[]>([])
+  const [data, setData] = useState<DiarySession[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const [isStale, setIsStale] = useState(false)

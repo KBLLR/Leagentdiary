@@ -42,8 +42,8 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
 
       {/* Timeline entries */}
       <div className="space-y-0">
-        {data.map((entry) => (
-          <TimelineCard key={entry.id} entry={entry} />
+        {data.map((session, idx) => (
+          <TimelineCard key={session.sessionId || idx} session={session} />
         ))}
       </div>
 

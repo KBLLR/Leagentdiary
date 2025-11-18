@@ -1,18 +1,23 @@
 /**
  * Timeline Card Component
- * Displays a single diary entry with expandable details
+ * Displays a single HTDI session with hand-in/hand-off details
  */
 
 import { useState } from 'react'
-import type { DiaryEntry } from '../types'
+import type { DiarySession } from '../types'
 
 interface TimelineCardProps {
-  entry: DiaryEntry
+  session: DiarySession
   defaultExpanded?: boolean
 }
 
-export function TimelineCard({ entry, defaultExpanded = false }: TimelineCardProps) {
+export function TimelineCard({ session, defaultExpanded = false }: TimelineCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded)
+
+  // Null safety - shouldn't happen due to filtering, but TypeScript requires it
+  if (!session.handIn || !session.handOff) {
+    return null
+  }
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp)
@@ -25,14 +30,12 @@ export function TimelineCard({ entry, defaultExpanded = false }: TimelineCardPro
     }).format(date)
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'success':
+  const getOriginModeColor = (mode: string) => {
+    switch (mode) {
+      case 'self-determined':
+        return 'bg-accent/20 text-accent'
+      case 'deployed':
         return 'bg-success/20 text-success'
-      case 'error':
-        return 'bg-error/20 text-error'
-      case 'in_progress':
-        return 'bg-warning/20 text-warning'
       default:
         return 'bg-text-secondary/20 text-text-secondary'
     }
@@ -52,7 +55,7 @@ export function TimelineCard({ entry, defaultExpanded = false }: TimelineCardPro
       <div className="ml-10">
         {/* Timestamp */}
         <time className="text-xs text-text-secondary">
-          {formatTimestamp(entry.timestamp)}
+          {formatTimestamp(session.handIn.datetimesummon)}
         </time>
 
         {/* Card */}
@@ -63,50 +66,34 @@ export function TimelineCard({ entry, defaultExpanded = false }: TimelineCardPro
             className="p-4 flex justify-between items-center cursor-pointer select-none"
           >
             <div className="flex-1 min-w-0">
-              {/* Badges and branch */}
+              {/* Badges and mode */}
               <div className="flex items-center space-x-2 mb-1 flex-wrap gap-1">
-                <span className={`text-xs font-medium px-2 py-0.5 rounded ${getStatusColor(entry.metadata.status)}`}>
-                  {entry.repo}
+                <span className={`text-xs font-medium px-2 py-0.5 rounded ${getOriginModeColor(session.handIn.originmode)}`}>
+                  {session.handIn.originmode}
                 </span>
                 <span className="text-xs font-medium text-text-secondary">
-                  {entry.branch}
+                  @{session.handIn.agenthandle}
                 </span>
-                {entry.metadata.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2 py-0.5 rounded bg-border/50 text-text-secondary"
-                  >
-                    {tag}
-                  </span>
-                ))}
               </div>
 
-              {/* Commit message or title */}
+              {/* Initial focus (main title) */}
               <p className="text-base font-semibold text-text-primary truncate">
-                {entry.commits[0]?.message || 'No commit message'}
+                {session.handIn.initialfocus}
               </p>
 
               {/* Agent info */}
               <div className="flex items-center space-x-2 mt-2">
-                {entry.agent.avatar ? (
-                  <img
-                    src={entry.agent.avatar}
-                    alt={entry.agent.name}
-                    className="h-5 w-5 rounded-full"
-                  />
-                ) : (
-                  <div className="h-5 w-5 rounded-full bg-accent/20 flex items-center justify-center">
-                    <span className="text-xs text-accent font-bold">
-                      {entry.agent.name[0]?.toUpperCase()}
-                    </span>
-                  </div>
-                )}
+                <div className="h-5 w-5 rounded-full bg-accent/20 flex items-center justify-center">
+                  <span className="text-xs text-accent font-bold">
+                    {session.handIn.selfchosenname[0]?.toUpperCase()}
+                  </span>
+                </div>
                 <span className="text-sm text-text-secondary">
-                  {entry.agent.name}
+                  {session.handIn.selfchosenname}
                 </span>
-                {entry.agent.role && (
+                {session.handIn.favoriteanimal && (
                   <span className="text-xs text-text-secondary/70">
-                    • {entry.agent.role}
+                    • {session.handIn.favoriteanimal}
                   </span>
                 )}
               </div>
@@ -133,94 +120,107 @@ export function TimelineCard({ entry, defaultExpanded = false }: TimelineCardPro
           {/* Collapsible content */}
           <div
             className={`overflow-hidden transition-all duration-500 ease-in-out ${
-              expanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+              expanded ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
             <div className="p-4 border-t border-border space-y-4">
-              {/* Reflection */}
-              {entry.metadata.reflection && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
-                    Agentic Reflection
-                  </h4>
-                  <p className="text-sm text-text-secondary leading-relaxed">
-                    {entry.metadata.reflection}
-                  </p>
+              {/* Favorite song */}
+              {session.handIn.favoritesong && (
+                <div className="text-sm">
+                  <span className="text-text-secondary">Favorite song: </span>
+                  <span className="text-text-primary italic">{session.handIn.favoritesong}</span>
                 </div>
               )}
 
-              {/* Commits */}
-              {entry.commits.length > 1 && (
+              {/* Contributions */}
+              {session.handOff.contributions.length > 0 && (
                 <div>
                   <h4 className="text-sm font-semibold mb-2 text-text-primary">
-                    Commits ({entry.commits.length})
+                    Contributions ({session.handOff.contributions.length})
+                  </h4>
+                  <ul className="space-y-1 text-sm text-text-secondary">
+                    {session.handOff.contributions.map((contribution, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-accent mr-2">•</span>
+                        <span>{contribution}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Files touched */}
+              {session.handOff.filesTouched.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
+                    Files Touched ({session.handOff.filesTouched.length})
                   </h4>
                   <div className="space-y-2">
-                    {entry.commits.slice(0, 3).map((commit) => (
-                      <div key={commit.sha} className="text-xs">
-                        <code className="text-accent">{commit.sha.slice(0, 7)}</code>
-                        <span className="text-text-secondary ml-2">{commit.message}</span>
+                    {session.handOff.filesTouched.slice(0, 5).map((file, idx) => (
+                      <div key={idx} className="text-xs bg-surface-hover rounded p-2">
+                        <code className="text-accent">{file.path}</code>
+                        {file.note && (
+                          <p className="text-text-secondary mt-1">{file.note}</p>
+                        )}
                       </div>
                     ))}
-                    {entry.commits.length > 3 && (
+                    {session.handOff.filesTouched.length > 5 && (
                       <p className="text-xs text-text-secondary">
-                        +{entry.commits.length - 3} more commits
+                        +{session.handOff.filesTouched.length - 5} more files
                       </p>
                     )}
                   </div>
                 </div>
               )}
 
-              {/* Handoffs */}
-              {entry.handoffs && entry.handoffs.length > 0 && (
+              {/* Actionables for next agent */}
+              {session.handOff.actionablesForNextAgent.length > 0 && (
                 <div>
                   <h4 className="text-sm font-semibold mb-2 text-text-primary">
-                    Agent Handoffs ({entry.handoffs.length})
+                    Actionables for Next Agent
                   </h4>
-                  <div className="space-y-2">
-                    {entry.handoffs.map((handoff, idx) => (
-                      <div key={idx} className="text-xs bg-surface-hover rounded p-2">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="text-accent">{handoff.from}</span>
-                          <span className="text-text-secondary">→</span>
-                          <span className="text-accent">{handoff.to}</span>
-                        </div>
-                        <p className="text-text-secondary">{handoff.context}</p>
-                      </div>
+                  <ul className="space-y-1 text-sm text-warning">
+                    {session.handOff.actionablesForNextAgent.map((actionable, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="mr-2">→</span>
+                        <span>{actionable}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               )}
 
-              {/* Links */}
-              <div className="flex justify-between items-center pt-2 border-t border-border">
-                <div className="flex items-center space-x-2 text-xs text-text-secondary">
-                  {entry.metadata.duration && (
-                    <span>Duration: {Math.round(entry.metadata.duration / 60)}m</span>
-                  )}
+              {/* Open questions */}
+              {session.handOff.openQuestions.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
+                    Open Questions
+                  </h4>
+                  <ul className="space-y-1 text-sm text-text-secondary">
+                    {session.handOff.openQuestions.map((question, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-error mr-2">?</span>
+                        <span>{question}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="flex space-x-4 text-sm">
-                  {entry.metadata.branchUrl && (
-                    <a
-                      href={entry.metadata.branchUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent hover:underline"
-                    >
-                      View Branch
-                    </a>
-                  )}
-                  {entry.metadata.deploymentUrl && (
-                    <a
-                      href={entry.metadata.deploymentUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-success hover:underline"
-                    >
-                      Visit Deployment
-                    </a>
-                  )}
+              )}
+
+              {/* Legacy signature */}
+              {session.handOff.legacySignature && (
+                <div className="pt-2 border-t border-border">
+                  <p className="text-sm text-text-secondary italic">
+                    "{session.handOff.legacySignature}"
+                  </p>
                 </div>
+              )}
+
+              {/* Session metadata */}
+              <div className="flex justify-between items-center pt-2 border-t border-border text-xs text-text-secondary">
+                <span>
+                  Session: {formatTimestamp(session.handIn.datetimesummon)} → {formatTimestamp(session.handOff.datetimebacktosource)}
+                </span>
               </div>
             </div>
           </div>

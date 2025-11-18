@@ -1,11 +1,125 @@
 /**
  * TypeScript interfaces for HTDI Agentic Lab diary data
- * Based on: htdi-agentic-lab/automation/scripts/diary/parse-multi-repo.mjs
+ * Based on actual HTDI API response from /api/diary and /api/agents
  */
 
-export interface DiaryEntry {
+/**
+ * Main diary response structure
+ */
+export interface DiaryResponse {
+  type: string
+  generatedAt: string // ISO 8601
+  source: string // Path to HANDOFFS.md
+  repoCount: number
+  totalSessions: number
+  repos: string[]
+  sessions: DiarySession[]
+}
+
+/**
+ * Individual session (replaces old DiaryEntry)
+ */
+export interface DiarySession {
+  sessionId: string // ISO timestamp or "<ISO_TIMESTAMP>" for template
+  handIn: HandIn | null
+  handOff: HandOff | null
+}
+
+/**
+ * Hand-in data when agent starts session
+ */
+export interface HandIn {
+  selfchosenname: string
+  agenthandle: string
+  originmode: 'self-determined' | 'deployed'
+  favoriteanimal?: string
+  favoritesong?: string
+  datetimesummon: string // ISO 8601
+  initialfocus: string
+}
+
+/**
+ * Hand-off data when agent completes session
+ */
+export interface HandOff {
+  contributions: string[]
+  filesTouched: FileTouched[]
+  actionablesForNextAgent: string[]
+  openQuestions: string[]
+  legacySignature: string
+  datetimebacktosource: string // ISO 8601
+}
+
+/**
+ * File modification info
+ */
+export interface FileTouched {
+  path: string
+  note: string
+}
+
+/**
+ * Agent registry response structure
+ */
+export interface AgentsResponse {
+  generatedAt: string
+  houses: House[]
+}
+
+/**
+ * House (organization/hub)
+ */
+export interface House {
   id: string
-  timestamp: string // ISO 8601
+  name: string
+  type: 'hub' | 'project'
+  agents: Agent[]
+}
+
+/**
+ * Agent from registry
+ */
+export interface Agent {
+  alias: string
+  name: string
+  role: string
+  category: 'orchestrator' | 'manager' | 'worker' | 'agent_service' | 'stage_artist'
+  status: 'active' | 'inactive' | 'archived'
+  promptPath: string
+  description: string
+}
+
+/**
+ * Filter and search types
+ */
+export interface DiaryFilters {
+  agents?: string[]
+  categories?: Agent['category'][]
+  originMode?: HandIn['originmode'][]
+  dateRange?: {
+    start: string
+    end: string
+  }
+  searchQuery?: string
+}
+
+/**
+ * Sort options
+ */
+export type SortField = 'sessionId' | 'agent' | 'originmode'
+export type SortDirection = 'asc' | 'desc'
+
+export interface SortOptions {
+  field: SortField
+  direction: SortDirection
+}
+
+/**
+ * Legacy types for backward compatibility (will be removed)
+ */
+export interface DiaryEntry extends DiarySession {
+  id: string
+  timestamp: string
   repo: string
   branch: string
   agent: AgentInfo
@@ -18,17 +132,17 @@ export interface CommitInfo {
   sha: string
   message: string
   author: string
-  timestamp: string // ISO 8601
+  timestamp: string
   filesChanged: string[]
   additions?: number
   deletions?: number
 }
 
 export interface HandoffInfo {
-  from: string // agent name
-  to: string // agent name
+  from: string
+  to: string
   context: string
-  timestamp: string // ISO 8601
+  timestamp: string
   reason?: string
 }
 
@@ -36,49 +150,15 @@ export interface AgentInfo {
   name: string
   role: string
   repo: string
-  avatar?: string // future: S3 URL from stage service
+  avatar?: string
   email?: string
 }
 
 export interface SessionMetadata {
-  duration?: number // seconds
+  duration?: number
   status: 'success' | 'error' | 'in_progress'
   tags: string[]
-  reflection?: string // agent's end-of-session summary
+  reflection?: string
   branchUrl?: string
   deploymentUrl?: string
-}
-
-/**
- * API response types
- */
-export interface DiaryResponse {
-  entries: DiaryEntry[]
-  total: number
-  lastUpdated: string
-}
-
-/**
- * Filter and search types
- */
-export interface DiaryFilters {
-  repos?: string[]
-  agents?: string[]
-  status?: SessionMetadata['status'][]
-  dateRange?: {
-    start: string
-    end: string
-  }
-  searchQuery?: string
-}
-
-/**
- * Sort options
- */
-export type SortField = 'timestamp' | 'repo' | 'agent' | 'duration'
-export type SortDirection = 'asc' | 'desc'
-
-export interface SortOptions {
-  field: SortField
-  direction: SortDirection
 }

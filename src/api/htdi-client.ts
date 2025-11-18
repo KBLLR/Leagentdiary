@@ -3,7 +3,7 @@
  * Handles all communication with the HTDI backend
  */
 
-import type { DiaryEntry } from '../types'
+import type { DiaryResponse, DiarySession, AgentsResponse } from '../types'
 
 const API_BASE = import.meta.env.VITE_HTDI_API_URL || 'http://localhost:3000/api'
 const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 10000
@@ -77,12 +77,12 @@ async function withRetry<T>(
 }
 
 /**
- * Fetch diary entries from HTDI
+ * Fetch diary sessions from HTDI
  */
-export async function fetchDiary(): Promise<DiaryEntry[]> {
+export async function fetchDiary(): Promise<DiarySession[]> {
   return withRetry(async () => {
     if (DEBUG) {
-      console.log('[HTDI API] Fetching diary entries...')
+      console.log('[HTDI API] Fetching diary sessions...')
     }
 
     const response = await fetchWithTimeout(`${API_BASE}/diary`)
@@ -94,20 +94,57 @@ export async function fetchDiary(): Promise<DiaryEntry[]> {
       )
     }
 
-    const data = await response.json()
+    const data = await response.json() as DiaryResponse
 
     if (DEBUG) {
-      console.log('[HTDI API] Diary entries fetched:', data)
+      console.log('[HTDI API] Diary sessions fetched:', data.sessions?.length || 0, 'sessions')
     }
 
-    // Handle different response formats
-    if (Array.isArray(data)) {
-      return data as DiaryEntry[]
-    } else if (data.entries && Array.isArray(data.entries)) {
-      return data.entries as DiaryEntry[]
+    // Return sessions array, filtering out template and invalid entries
+    if (data.sessions && Array.isArray(data.sessions)) {
+      const validSessions = data.sessions.filter(session => {
+        // Filter out template entries and sessions with missing data
+        return session.sessionId !== '<ISO_TIMESTAMP>' &&
+               session.handIn !== null &&
+               session.handOff !== null
+      })
+
+      if (DEBUG) {
+        console.log('[HTDI API] Filtered to', validSessions.length, 'valid sessions from', data.sessions.length, 'total')
+      }
+
+      return validSessions as DiarySession[]
     } else {
-      throw new HTDIApiError('Invalid diary response format', response.status, data)
+      throw new HTDIApiError('Invalid diary response format - missing sessions', response.status, data)
     }
+  })
+}
+
+/**
+ * Fetch agent registry from HTDI
+ */
+export async function fetchAgents(): Promise<AgentsResponse> {
+  return withRetry(async () => {
+    if (DEBUG) {
+      console.log('[HTDI API] Fetching agent registry...')
+    }
+
+    const response = await fetchWithTimeout(`${API_BASE}/agents`)
+
+    if (!response.ok) {
+      throw new HTDIApiError(
+        `Failed to fetch agents: ${response.statusText}`,
+        response.status
+      )
+    }
+
+    const data = await response.json() as AgentsResponse
+
+    if (DEBUG) {
+      console.log('[HTDI API] Agents fetched:', data.houses?.length || 0, 'houses')
+    }
+
+    return data
   })
 }
 
