@@ -3,11 +3,14 @@
  * Renders the list of diary entries with loading, error, and empty states
  */
 
+import { useState, useEffect } from 'react'
 import { useDiary, useAgents } from '../hooks'
 import { TimelineCard } from './TimelineCard'
+import { TimelineFilters } from './TimelineFilters'
 import { LoadingSpinner } from './LoadingSpinner'
 import { ErrorMessage } from './ErrorMessage'
 import { EmptyState } from './EmptyState'
+import type { DiarySession } from '../types'
 
 interface TimelineProps {
   pollInterval?: number
@@ -16,6 +19,12 @@ interface TimelineProps {
 export function Timeline({ pollInterval }: TimelineProps = {}) {
   const { data, loading, error, refresh, isStale } = useDiary({ pollInterval })
   const { data: agentsData } = useAgents()
+  const [filteredData, setFilteredData] = useState<DiarySession[]>(data)
+
+  // Update filtered data when source data changes
+  useEffect(() => {
+    setFilteredData(data)
+  }, [data])
 
   // Show loading spinner only on initial load
   if (loading && data.length === 0) {
@@ -41,9 +50,21 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
         </div>
       )}
 
+      {/* Filters */}
+      <TimelineFilters
+        sessions={data}
+        agentsData={agentsData}
+        onFilterChange={setFilteredData}
+      />
+
       {/* Timeline entries */}
       <div className="space-y-0">
-        {data.map((session, idx) => (
+        {filteredData.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-text-secondary">No sessions match your filters.</p>
+            <p className="text-text-secondary text-sm mt-2">Try adjusting your search or filter criteria.</p>
+          </div>
+        ) : filteredData.map((session, idx) => (
           <TimelineCard
             key={session.sessionId || idx}
             session={session}
