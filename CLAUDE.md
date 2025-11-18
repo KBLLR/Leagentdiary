@@ -814,3 +814,68 @@ This playbook is designed to be executed autonomously but also allows for flexib
 The goal is a deployable, maintainable codebase that serves as the foundation for future enhancements (stage service, memory queries, 3D personas). Focus on clean architecture and clear documentation so the next developer (human or AI) can easily extend the system.
 
 **Good luck, and happy coding!**
+
+---
+
+## Session Notes
+
+### Session: 2025-11-18 (Pre-implementation)
+
+**Context Check Complete**:
+- ✅ Read full playbook and understand the mission
+- ✅ Verified repo state: clean main branch, static prototype only
+- ✅ Confirmed Node v22.18.0, npm 10.9.3 (well above requirements)
+- ⚠️ HTDI API not running on port 3000 (can proceed with manual scaffolding or mock data)
+- ✅ Prototype backed up to `.prototype-backup/index.html.bak`
+
+**Current Status**: Ready to begin Phase 1 (Project Scaffolding)
+
+**Blocker Encountered**: `npm create vite` requires interactive approval prompt
+
+**Recommended Next Steps**:
+1. **Option A** (Preferred): Manually scaffold the Vite + React + TS project
+   - Create `package.json` with Vite, React, TypeScript dependencies
+   - Set up `vite.config.ts`, `tsconfig.json`, `tsconfig.node.json`
+   - Create `src/` structure: `main.tsx`, `App.tsx`, `index.css`
+   - Run `npm install` once files are in place
+
+2. **Option B**: User runs `npm create vite@latest . -- --template react-ts` and selects "Yes"
+
+**Manual Scaffold Template** (if Option A):
+```json
+// package.json - based on Vite react-ts template
+{
+  "name": "leagentdiary",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.2"
+  }
+}
+```
+
+**Todo List Active** (14 tasks created):
+- [in_progress] Initialize Vite + React + TypeScript project
+- [pending] Configure Tailwind CSS, env setup, data layer, UI components, etc.
+
+**Important Files to Reference**:
+- Prototype colors/styles: `index.html:11-36`
+- Timeline card structure: `index.html:144-197`
+- Collapsible logic: `index.html:204-212`
+- HTDI diary schema: inspect `htdi-agentic-lab/var/htdi.diary.json` or `/api/diary` response
+
+**Next Agent**: Pick up at Phase 1, Task 1.1. Choose manual scaffolding to avoid interactive prompts, then proceed through the todo list sequentially.

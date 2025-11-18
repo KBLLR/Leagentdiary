@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: dark;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+}
+
+@layer components {
+  /* Timeline specific styles */
+  .timeline-line {
+    @apply absolute left-8 top-0 w-px bg-border;
+  }
+
+  .timeline-dot {
+    @apply absolute left-6 top-6 w-5 h-5 rounded-full bg-accent ring-4 ring-background;
+  }
+
+  .timeline-card {
+    @apply bg-surface border border-border rounded-lg p-6 transition-all duration-200;
+  }
+
+  .timeline-card:hover {
+    @apply border-accent/50 shadow-lg shadow-accent/10;
+  }
+}
