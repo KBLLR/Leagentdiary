@@ -4,20 +4,25 @@
  */
 
 import { useState } from 'react'
-import type { DiarySession } from '../types'
+import type { DiarySession, AgentsResponse } from '../types'
+import { findAgentByHandle, getCategoryColor, formatCategory } from '../utils/agent-utils'
 
 interface TimelineCardProps {
   session: DiarySession
+  agentsData: AgentsResponse | null
   defaultExpanded?: boolean
 }
 
-export function TimelineCard({ session, defaultExpanded = false }: TimelineCardProps) {
+export function TimelineCard({ session, agentsData, defaultExpanded = false }: TimelineCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded)
 
   // Null safety - shouldn't happen due to filtering, but TypeScript requires it
   if (!session.handIn || !session.handOff) {
     return null
   }
+
+  // Find agent in registry
+  const agentInfo = findAgentByHandle(session.handIn.agenthandle, agentsData)
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp)
@@ -71,9 +76,19 @@ export function TimelineCard({ session, defaultExpanded = false }: TimelineCardP
                 <span className={`text-xs font-medium px-2 py-0.5 rounded ${getOriginModeColor(session.handIn.originmode)}`}>
                   {session.handIn.originmode}
                 </span>
+                {agentInfo && (
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${getCategoryColor(agentInfo.category)}`}>
+                    {formatCategory(agentInfo.category)}
+                  </span>
+                )}
                 <span className="text-xs font-medium text-text-secondary">
                   @{session.handIn.agenthandle}
                 </span>
+                {agentInfo?.role && (
+                  <span className="text-xs text-text-secondary/70">
+                    • {agentInfo.role}
+                  </span>
+                )}
               </div>
 
               {/* Initial focus (main title) */}
@@ -124,6 +139,24 @@ export function TimelineCard({ session, defaultExpanded = false }: TimelineCardP
             }`}
           >
             <div className="p-4 border-t border-border space-y-4">
+              {/* Agent registry info */}
+              {agentInfo && (
+                <div className="text-sm space-y-1">
+                  {agentInfo.description && (
+                    <div>
+                      <span className="text-text-secondary">Role: </span>
+                      <span className="text-text-primary">{agentInfo.description}</span>
+                    </div>
+                  )}
+                  {agentInfo.promptPath && (
+                    <div>
+                      <span className="text-text-secondary">Prompt: </span>
+                      <code className="text-xs text-accent">{agentInfo.promptPath}</code>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Favorite song */}
               {session.handIn.favoritesong && (
                 <div className="text-sm">

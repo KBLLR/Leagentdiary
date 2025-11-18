@@ -3,7 +3,7 @@
  * Renders the list of diary entries with loading, error, and empty states
  */
 
-import { useDiary } from '../hooks'
+import { useDiary, useAgents } from '../hooks'
 import { TimelineCard } from './TimelineCard'
 import { LoadingSpinner } from './LoadingSpinner'
 import { ErrorMessage } from './ErrorMessage'
@@ -15,6 +15,7 @@ interface TimelineProps {
 
 export function Timeline({ pollInterval }: TimelineProps = {}) {
   const { data, loading, error, refresh, isStale } = useDiary({ pollInterval })
+  const { data: agentsData } = useAgents()
 
   // Show loading spinner only on initial load
   if (loading && data.length === 0) {
@@ -43,7 +44,11 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
       {/* Timeline entries */}
       <div className="space-y-0">
         {data.map((session, idx) => (
-          <TimelineCard key={session.sessionId || idx} session={session} />
+          <TimelineCard
+            key={session.sessionId || idx}
+            session={session}
+            agentsData={agentsData}
+          />
         ))}
       </div>
 
