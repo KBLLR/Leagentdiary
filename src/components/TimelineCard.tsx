@@ -35,79 +35,79 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
     }).format(date)
   }
 
-  const getOriginModeColor = (mode: string) => {
+  const getOriginModeClass = (mode: string) => {
     switch (mode) {
       case 'self-determined':
-        return 'bg-accent/20 text-accent'
+        return 'badge-origin-self'
       case 'deployed':
-        return 'bg-success/20 text-success'
+        return 'badge-origin-deployed'
       default:
-        return 'bg-text-secondary/20 text-text-secondary'
+        return 'badge'
     }
   }
 
   const toggleExpanded = () => setExpanded(!expanded)
 
   return (
-    <div className="timeline-item relative pb-10 last:pb-0">
+    <div className="timeline-item">
       {/* Timeline line */}
-      <div className="timeline-line absolute left-5 top-6 bottom-0 w-0.5 bg-border/30" />
+      <div className="timeline-line" />
 
       {/* Timeline dot */}
-      <div className="absolute left-4 top-3.5 w-3 h-3 bg-accent rounded-full ring-4 ring-background" />
+      <div className="timeline-dot" />
 
       {/* Card content */}
-      <div className="ml-10">
+      <div className="timeline-content">
         {/* Timestamp */}
-        <time className="text-xs text-text-secondary">
+        <time className="timeline-timestamp">
           {formatTimestamp(session.handIn.datetimesummon)}
         </time>
 
         {/* Card */}
-        <div className="mt-2 bg-surface border border-border rounded-xl shadow-sm hover:shadow-md hover:border-accent/50 transition-all duration-200">
+        <div className="timeline-card">
           {/* Card header (trigger) */}
           <div
             onClick={toggleExpanded}
-            className="p-4 flex justify-between items-center cursor-pointer select-none"
+            className="timeline-card-header"
           >
-            <div className="flex-1 min-w-0">
+            <div className="timeline-card-main">
               {/* Badges and mode */}
-              <div className="flex items-center space-x-2 mb-1 flex-wrap gap-1">
-                <span className={`text-xs font-medium px-2 py-0.5 rounded ${getOriginModeColor(session.handIn.originmode)}`}>
+              <div className="timeline-card-badges">
+                <span className={`badge ${getOriginModeClass(session.handIn.originmode)}`}>
                   {session.handIn.originmode}
                 </span>
                 {agentInfo && (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${getCategoryColor(agentInfo.category)}`}>
+                  <span className={`badge badge-category ${getCategoryColor(agentInfo.category)}`}>
                     {formatCategory(agentInfo.category)}
                   </span>
                 )}
-                <span className="text-xs font-medium text-text-secondary">
+                <span className="agent-handle">
                   @{session.handIn.agenthandle}
                 </span>
                 {agentInfo?.role && (
-                  <span className="text-xs text-text-secondary/70">
+                  <span className="agent-role">
                     • {agentInfo.role}
                   </span>
                 )}
               </div>
 
               {/* Initial focus (main title) */}
-              <p className="text-base font-semibold text-text-primary truncate">
+              <p className="card-title">
                 {session.handIn.initialfocus}
               </p>
 
               {/* Agent info */}
-              <div className="flex items-center space-x-2 mt-2">
-                <div className="h-5 w-5 rounded-full bg-accent/20 flex items-center justify-center">
-                  <span className="text-xs text-accent font-bold">
+              <div className="agent-info">
+                <div className="agent-avatar">
+                  <span>
                     {session.handIn.selfchosenname[0]?.toUpperCase()}
                   </span>
                 </div>
-                <span className="text-sm text-text-secondary">
+                <span className="agent-name">
                   {session.handIn.selfchosenname}
                 </span>
                 {session.handIn.favoriteanimal && (
-                  <span className="text-xs text-text-secondary/70">
+                  <span className="agent-favorite">
                     • {session.handIn.favoriteanimal}
                   </span>
                 )}
@@ -116,9 +116,7 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
             {/* Chevron icon */}
             <svg
-              className={`w-4 h-4 text-text-secondary transition-transform duration-300 flex-shrink-0 ml-4 ${
-                expanded ? 'rotate-180' : ''
-              }`}
+              className={`chevron-icon${expanded ? ' expanded' : ''}`}
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -134,24 +132,22 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
           {/* Collapsible content */}
           <div
-            className={`overflow-hidden transition-all duration-500 ease-in-out ${
-              expanded ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
-            }`}
+            className={`timeline-card-body${expanded ? ' expanded' : ''}`}
           >
-            <div className="p-4 border-t border-border space-y-4">
+            <div className="timeline-card-content">
               {/* Agent registry info */}
               {agentInfo && (
-                <div className="text-sm space-y-1">
+                <div className="card-section">
                   {agentInfo.description && (
-                    <div>
-                      <span className="text-text-secondary">Role: </span>
-                      <span className="text-text-primary">{agentInfo.description}</span>
+                    <div className="card-text">
+                      <span className="card-text-label">Role: </span>
+                      <span className="card-text-value">{agentInfo.description}</span>
                     </div>
                   )}
                   {agentInfo.promptPath && (
-                    <div>
-                      <span className="text-text-secondary">Prompt: </span>
-                      <code className="text-xs text-accent">{agentInfo.promptPath}</code>
+                    <div className="card-text">
+                      <span className="card-text-label">Prompt: </span>
+                      <code className="file-path" style={{ fontSize: '0.75rem' }}>{agentInfo.promptPath}</code>
                     </div>
                   )}
                 </div>
@@ -159,22 +155,24 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {/* Favorite song */}
               {session.handIn.favoritesong && (
-                <div className="text-sm">
-                  <span className="text-text-secondary">Favorite song: </span>
-                  <span className="text-text-primary italic">{session.handIn.favoritesong}</span>
+                <div className="card-section">
+                  <p className="card-text">
+                    <span className="card-text-label">Favorite song: </span>
+                    <span className="card-text-value">{session.handIn.favoritesong}</span>
+                  </p>
                 </div>
               )}
 
               {/* Contributions */}
               {session.handOff.contributions.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
+                <div className="card-section">
+                  <h4 className="card-section-title">
                     Contributions ({session.handOff.contributions.length})
                   </h4>
-                  <ul className="space-y-1 text-sm text-text-secondary">
+                  <ul className="card-list">
                     {session.handOff.contributions.map((contribution, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <span className="text-accent mr-2">•</span>
+                      <li key={idx} className="card-list-item">
+                        <span className="list-bullet">•</span>
                         <span>{contribution}</span>
                       </li>
                     ))}
@@ -184,21 +182,21 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {/* Files touched */}
               {session.handOff.filesTouched.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
+                <div className="card-section">
+                  <h4 className="card-section-title">
                     Files Touched ({session.handOff.filesTouched.length})
                   </h4>
-                  <div className="space-y-2">
+                  <div>
                     {session.handOff.filesTouched.slice(0, 5).map((file, idx) => (
-                      <div key={idx} className="text-xs bg-surface-hover rounded p-2">
-                        <code className="text-accent">{file.path}</code>
+                      <div key={idx} className="file-item">
+                        <code className="file-path">{file.path}</code>
                         {file.note && (
-                          <p className="text-text-secondary mt-1">{file.note}</p>
+                          <p className="file-note">{file.note}</p>
                         )}
                       </div>
                     ))}
                     {session.handOff.filesTouched.length > 5 && (
-                      <p className="text-xs text-text-secondary">
+                      <p className="file-note">
                         +{session.handOff.filesTouched.length - 5} more files
                       </p>
                     )}
@@ -208,15 +206,15 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {/* Actionables for next agent */}
               {session.handOff.actionablesForNextAgent.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
+                <div className="card-section">
+                  <h4 className="card-section-title">
                     Actionables for Next Agent
                   </h4>
-                  <ul className="space-y-1 text-sm text-warning">
+                  <ul className="card-list">
                     {session.handOff.actionablesForNextAgent.map((actionable, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <span className="mr-2">→</span>
-                        <span>{actionable}</span>
+                      <li key={idx} className="card-list-item">
+                        <span className="list-bullet list-bullet-warning">→</span>
+                        <span style={{ color: 'var(--color-warning)' }}>{actionable}</span>
                       </li>
                     ))}
                   </ul>
@@ -225,14 +223,14 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {/* Open questions */}
               {session.handOff.openQuestions.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2 text-text-primary">
+                <div className="card-section">
+                  <h4 className="card-section-title">
                     Open Questions
                   </h4>
-                  <ul className="space-y-1 text-sm text-text-secondary">
+                  <ul className="card-list">
                     {session.handOff.openQuestions.map((question, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <span className="text-error mr-2">?</span>
+                      <li key={idx} className="card-list-item">
+                        <span className="list-bullet list-bullet-error">?</span>
                         <span>{question}</span>
                       </li>
                     ))}
@@ -242,15 +240,15 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {/* Legacy signature */}
               {session.handOff.legacySignature && (
-                <div className="pt-2 border-t border-border">
-                  <p className="text-sm text-text-secondary italic">
+                <div className="card-section" style={{ paddingTop: 'var(--spacing-sm)', borderTop: '1px solid var(--color-border)' }}>
+                  <p className="signature-text">
                     "{session.handOff.legacySignature}"
                   </p>
                 </div>
               )}
 
               {/* Session metadata */}
-              <div className="flex justify-between items-center pt-2 border-t border-border text-xs text-text-secondary">
+              <div className="metadata-section">
                 <span>
                   Session: {formatTimestamp(session.handIn.datetimesummon)} → {formatTimestamp(session.handOff.datetimebacktosource)}
                 </span>

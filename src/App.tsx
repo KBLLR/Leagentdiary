@@ -7,13 +7,13 @@ import { Timeline } from './components'
 
 function App() {
   return (
-    <div className="min-h-screen bg-background text-text-primary">
+    <div className="app-container">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Agent Timeline</h2>
-          <p className="text-text-secondary">
+      <main className="app-main">
+        <div style={{ marginBottom: 'var(--spacing-xl)' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: 'var(--spacing-sm)' }}>Agent Timeline</h2>
+          <p style={{ color: 'var(--color-text-secondary)' }}>
             Live diary of agent sessions across your repositories
           </p>
         </div>
@@ -21,15 +21,17 @@ function App() {
         <Timeline />
       </main>
 
-      <footer className="border-t border-border mt-16 py-6">
-        <div className="container mx-auto px-4 max-w-4xl text-center text-sm text-text-secondary">
+      <footer style={{ borderTop: '1px solid var(--color-border)', marginTop: '4rem', padding: 'var(--spacing-lg) 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 var(--spacing-lg)', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
           <p>
             LeAgentDiary • Powered by{' '}
             <a
               href="https://github.com/KBLLR/htdi-agentic-lab"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent hover:underline"
+              style={{ color: 'var(--color-accent)', textDecoration: 'none' }}
+              onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+              onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
             >
               HTDI Agentic Lab
             </a>

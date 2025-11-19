@@ -21,7 +21,6 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
   const [showFilters, setShowFilters] = useState(false)
 
   // Extract unique values for filter options
-  const repos = Array.from(new Set(sessions.map(s => s.handIn?.initialfocus || 'Unknown')))
   const agents = Array.from(new Set(sessions.map(s => s.handIn?.agenthandle).filter(Boolean) as string[]))
   const originModes = Array.from(new Set(sessions.map(s => s.handIn?.originmode).filter(Boolean) as string[]))
 
@@ -118,20 +117,20 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
     selectedCategories.length
 
   return (
-    <div className="mb-6 bg-surface border border-border rounded-xl shadow-sm p-4">
+    <div className="timeline-filters">
       {/* Search bar and filter toggle */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="filters-controls">
         {/* Search input */}
-        <div className="flex-1 relative">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search sessions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 pl-10 bg-background border border-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+            className="search-input"
           />
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary"
+            className="search-icon"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -145,14 +144,14 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
         {/* Filter toggle button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="px-4 py-2 bg-background border border-border rounded-lg text-text-primary hover:bg-surface-hover hover:border-accent/50 transition-colors flex items-center gap-2"
+          className="filter-toggle-btn"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg style={{ width: '1rem', height: '1rem' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
           Filters
           {activeFilterCount > 0 && (
-            <span className="bg-accent text-background rounded-full px-2 py-0.5 text-xs font-medium">
+            <span className="filter-count-badge">
               {activeFilterCount}
             </span>
           )}
@@ -162,7 +161,7 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
         {activeFilterCount > 0 && (
           <button
             onClick={clearAllFilters}
-            className="px-4 py-2 text-text-secondary hover:text-text-primary transition-colors"
+            className="clear-filters-btn"
           >
             Clear all
           </button>
@@ -171,21 +170,17 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
 
       {/* Expandable filter options */}
       {showFilters && (
-        <div className="mt-4 pt-4 border-t border-border space-y-4">
+        <div className="filter-options">
           {/* Agent filter */}
           {agents.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-text-primary mb-2">Agents</h4>
-              <div className="flex flex-wrap gap-2">
+            <div className="filter-section">
+              <h4 className="filter-section-title">Agents</h4>
+              <div className="filter-buttons">
                 {agents.map(agent => (
                   <button
                     key={agent}
                     onClick={() => toggleSelection(agent, selectedAgents, setSelectedAgents)}
-                    className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                      selectedAgents.includes(agent)
-                        ? 'bg-accent text-background'
-                        : 'bg-background border border-border text-text-secondary hover:border-accent/50'
-                    }`}
+                    className={`filter-button${selectedAgents.includes(agent) ? ' active' : ''}`}
                   >
                     @{agent}
                   </button>
@@ -196,18 +191,14 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
 
           {/* Origin mode filter */}
           {originModes.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-text-primary mb-2">Origin Mode</h4>
-              <div className="flex flex-wrap gap-2">
+            <div className="filter-section">
+              <h4 className="filter-section-title">Origin Mode</h4>
+              <div className="filter-buttons">
                 {originModes.map(mode => (
                   <button
                     key={mode}
                     onClick={() => toggleSelection(mode, selectedOriginModes, setSelectedOriginModes)}
-                    className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                      selectedOriginModes.includes(mode)
-                        ? 'bg-accent text-background'
-                        : 'bg-background border border-border text-text-secondary hover:border-accent/50'
-                    }`}
+                    className={`filter-button${selectedOriginModes.includes(mode) ? ' active' : ''}`}
                   >
                     {mode}
                   </button>
@@ -218,18 +209,14 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
 
           {/* Category filter */}
           {categories.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-text-primary mb-2">Agent Categories</h4>
-              <div className="flex flex-wrap gap-2">
+            <div className="filter-section">
+              <h4 className="filter-section-title">Agent Categories</h4>
+              <div className="filter-buttons">
                 {categories.map(category => (
                   <button
                     key={category}
                     onClick={() => toggleSelection(category, selectedCategories, setSelectedCategories)}
-                    className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                      selectedCategories.includes(category)
-                        ? 'bg-accent text-background'
-                        : 'bg-background border border-border text-text-secondary hover:border-accent/50'
-                    }`}
+                    className={`filter-button${selectedCategories.includes(category) ? ' active' : ''}`}
                   >
                     {category.replace(/_/g, ' ')}
                   </button>

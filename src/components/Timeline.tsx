@@ -42,10 +42,10 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
   }
 
   return (
-    <div className="relative">
+    <div className="timeline-container">
       {/* Stale indicator (when polling updates) */}
       {isStale && (
-        <div className="fixed top-4 right-4 z-50 bg-warning/20 border border-warning text-warning px-3 py-2 rounded-lg text-sm font-medium animate-pulse">
+        <div className="stale-indicator">
           Updating...
         </div>
       )}
@@ -58,11 +58,11 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
       />
 
       {/* Timeline entries */}
-      <div className="space-y-0">
+      <div className="timeline-list">
         {filteredData.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-text-secondary">No sessions match your filters.</p>
-            <p className="text-text-secondary text-sm mt-2">Try adjusting your search or filter criteria.</p>
+          <div className="no-results">
+            <p className="no-results-title">No sessions match your filters.</p>
+            <p className="no-results-text">Try adjusting your search or filter criteria.</p>
           </div>
         ) : filteredData.map((session, idx) => (
           <TimelineCard
@@ -75,13 +75,13 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
 
       {/* Error banner (if error occurs after initial load) */}
       {error && data.length > 0 && (
-        <div className="mt-4 bg-error/10 border border-error/30 rounded-lg p-4">
-          <p className="text-sm text-error">
+        <div className="error-banner">
+          <p className="error-banner-text">
             Failed to fetch latest updates: {error.message}
           </p>
           <button
             onClick={refresh}
-            className="mt-2 text-sm text-accent hover:underline"
+            className="error-banner-button"
           >
             Retry
           </button>

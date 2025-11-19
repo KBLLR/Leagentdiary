@@ -4,12 +4,28 @@
 
 export function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center py-12">
-      <div className="relative">
-        <div className="w-12 h-12 rounded-full border-4 border-border animate-pulse" />
-        <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-accent border-t-transparent animate-spin" />
+    <div className="loading-spinner">
+      <div style={{ position: 'relative' }}>
+        <div style={{
+          width: '3rem',
+          height: '3rem',
+          borderRadius: 'var(--radius-full)',
+          border: '4px solid var(--color-border)',
+          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '3rem',
+          height: '3rem',
+          borderRadius: 'var(--radius-full)',
+          border: '4px solid var(--color-accent)',
+          borderTopColor: 'transparent',
+          animation: 'spin 1s linear infinite'
+        }} />
       </div>
-      <span className="ml-4 text-text-secondary">Loading diary entries...</span>
+      <span style={{ marginLeft: 'var(--spacing-lg)' }}>Loading diary entries...</span>
     </div>
   )
 }
