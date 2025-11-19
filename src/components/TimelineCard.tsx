@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import type { DiarySession, AgentsResponse } from '../types'
 import { findAgentByHandle, getCategoryColor, formatCategory } from '../utils/agent-utils'
+import { SceneViewer } from './SceneViewer'
 
 interface TimelineCardProps {
   session: DiarySession
@@ -47,6 +48,47 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
   }
 
   const toggleExpanded = () => setExpanded(!expanded)
+
+  // Demo scene data - can be made dynamic later based on session data
+  const demoSceneData = {
+    camera: { position: [0, 2, 5] as [number, number, number], fov: 50 },
+    objects: [
+      {
+        type: 'sphere' as const,
+        position: [0, 1, 0] as [number, number, number],
+        color: '#818cf8',
+        scale: [0.8, 0.8, 0.8] as [number, number, number]
+      },
+      {
+        type: 'box' as const,
+        position: [-1.5, 0.5, 0] as [number, number, number],
+        color: '#10b981',
+        scale: [0.5, 0.5, 0.5] as [number, number, number]
+      },
+      {
+        type: 'cylinder' as const,
+        position: [1.5, 0.5, 0] as [number, number, number],
+        color: '#f59e0b',
+        scale: [0.4, 0.8, 0.4] as [number, number, number]
+      },
+      {
+        type: 'plane' as const,
+        position: [0, 0, 0] as [number, number, number],
+        color: '#333333',
+        scale: [10, 1, 10] as [number, number, number],
+        rotation: [-1.57, 0, 0] as [number, number, number]
+      }
+    ],
+    lights: [
+      { type: 'ambient' as const, color: '#404040', intensity: 0.5 },
+      {
+        type: 'directional' as const,
+        color: '#ffffff',
+        intensity: 0.8,
+        position: [5, 5, 5] as [number, number, number]
+      }
+    ]
+  }
 
   return (
     <div className="timeline-item">
@@ -152,6 +194,12 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                   )}
                 </div>
               )}
+
+              {/* Scene Preview */}
+              <div className="card-section">
+                <h4 className="card-section-title">Scene Preview</h4>
+                <SceneViewer sceneData={demoSceneData} autoRotate={true} />
+              </div>
 
               {/* Favorite song */}
               {session.handIn.favoritesong && (
