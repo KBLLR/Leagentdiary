@@ -14,7 +14,6 @@ interface TimelineFiltersProps {
 
 export function TimelineFilters({ sessions, agentsData, onFilterChange }: TimelineFiltersProps) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedRepos, setSelectedRepos] = useState<string[]>([])
   const [selectedAgents, setSelectedAgents] = useState<string[]>([])
   const [selectedOriginModes, setSelectedOriginModes] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -43,21 +42,20 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
           session.handIn?.initialfocus,
           session.handIn?.favoritesong,
           session.handIn?.favoriteanimal,
+          session.repo_id,
+          session.reflection?.summary,
+          ...(session.reflection?.learnings || []),
+          ...(session.reflection?.next_actions || []),
           ...(session.handOff?.contributions || []),
           ...(session.handOff?.actionablesForNextAgent || []),
           ...(session.handOff?.openQuestions || []),
+          ...session.interactions.map((interaction) => interaction.summary),
+          ...session.tasks.map((task) => task.title),
           session.handOff?.legacySignature,
         ].filter(Boolean).join(' ').toLowerCase()
 
         return searchableText.includes(query)
       })
-    }
-
-    // Repo filter (using initialfocus as proxy)
-    if (selectedRepos.length > 0) {
-      filtered = filtered.filter(s =>
-        selectedRepos.includes(s.handIn?.initialfocus || 'Unknown')
-      )
     }
 
     // Agent filter
@@ -91,7 +89,7 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
     }
 
     onFilterChange(filtered)
-  }, [searchQuery, selectedRepos, selectedAgents, selectedOriginModes, selectedCategories, sessions, agentsData, onFilterChange])
+  }, [searchQuery, selectedAgents, selectedOriginModes, selectedCategories, sessions, agentsData, onFilterChange])
 
   const toggleSelection = (value: string, selected: string[], setter: (values: string[]) => void) => {
     if (selected.includes(value)) {
@@ -103,7 +101,6 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
 
   const clearAllFilters = () => {
     setSearchQuery('')
-    setSelectedRepos([])
     setSelectedAgents([])
     setSelectedOriginModes([])
     setSelectedCategories([])
@@ -111,7 +108,6 @@ export function TimelineFilters({ sessions, agentsData, onFilterChange }: Timeli
 
   const activeFilterCount =
     (searchQuery ? 1 : 0) +
-    selectedRepos.length +
     selectedAgents.length +
     selectedOriginModes.length +
     selectedCategories.length

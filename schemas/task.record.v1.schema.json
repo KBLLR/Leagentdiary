@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kbllr.com/schemas/leagentdiary/task.record.v1.schema.json",
+  "title": "LeAgentDiary Task Record v1",
+  "type": "object",
+  "required": ["id", "task_id", "title", "status", "priority", "house_id", "session_refs"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "status": { "enum": ["todo", "in_progress", "blocked", "done"] },
+    "priority": { "enum": ["low", "medium", "high"] },
+    "assignee": { "type": "string" },
+    "house_id": { "type": "string" },
+    "session_refs": { "type": "array", "items": { "type": "string" } },
+    "handoff_refs": { "type": "array", "items": { "type": "string" } },
+    "open_questions": { "type": "array", "items": { "type": "string" } },
+    "source_refs": { "type": "array", "items": { "type": "string" } },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "notion_page_id": { "type": "string" },
+    "metadata": { "type": "object" }
+  }
+}

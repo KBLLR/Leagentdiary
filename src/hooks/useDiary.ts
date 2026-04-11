@@ -3,8 +3,8 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { fetchDiary } from '../api'
-import type { DiarySession } from '../types'
+import { fetchDiaryBundle } from '../api'
+import type { DiarySession, TaskRecord } from '../types'
 
 const DEFAULT_POLL_INTERVAL = Number(import.meta.env.VITE_POLL_INTERVAL) || 30000
 const DEBUG = import.meta.env.VITE_DEBUG === 'true'
@@ -18,6 +18,7 @@ interface UseDiaryOptions {
 
 interface UseDiaryReturn {
   data: DiarySession[]
+  tasks: TaskRecord[]
   loading: boolean
   error: Error | null
   refresh: () => Promise<void>
@@ -36,6 +37,7 @@ export function useDiary(options: UseDiaryOptions = {}): UseDiaryReturn {
   } = options
 
   const [data, setData] = useState<DiarySession[]>([])
+  const [tasks, setTasks] = useState<TaskRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const [isStale, setIsStale] = useState(false)
@@ -52,20 +54,21 @@ export function useDiary(options: UseDiaryOptions = {}): UseDiaryReturn {
       setLoading(true)
       setIsStale(false)
 
-      const entries = await fetchDiary()
+      const bundle = await fetchDiaryBundle()
 
       // Only update state if component is still mounted
       if (!isMountedRef.current) return
 
-      setData(entries)
+      setData(bundle.sessions)
+      setTasks(bundle.tasks)
       setError(null)
 
       if (onSuccess) {
-        onSuccess(entries)
+        onSuccess(bundle.sessions)
       }
 
       if (DEBUG) {
-        console.log('[useDiary] Data fetched:', entries.length, 'entries')
+        console.log('[useDiary] Data fetched:', bundle.sessions.length, 'entries')
       }
     } catch (err) {
       if (!isMountedRef.current) return
@@ -125,6 +128,7 @@ export function useDiary(options: UseDiaryOptions = {}): UseDiaryReturn {
 
   return {
     data,
+    tasks,
     loading,
     error,
     refresh,

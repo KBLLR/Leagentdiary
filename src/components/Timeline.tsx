@@ -1,63 +1,60 @@
-/**
- * Timeline Container Component
- * Renders the list of diary entries with loading, error, and empty states
- */
-
-import { useState, useEffect } from 'react'
-import { useDiary, useAgents } from '../hooks'
+import { useEffect, useState } from 'react'
 import { TimelineCard } from './TimelineCard'
 import { TimelineFilters } from './TimelineFilters'
 import { LoadingSpinner } from './LoadingSpinner'
 import { ErrorMessage } from './ErrorMessage'
 import { EmptyState } from './EmptyState'
-import type { DiarySession } from '../types'
+import type { AgentsResponse, DiarySession, TaskRecord } from '../types'
 
 interface TimelineProps {
-  pollInterval?: number
+  sessions: DiarySession[]
+  tasks: TaskRecord[]
+  agentsData: AgentsResponse | null
+  loading: boolean
+  error: Error | null
+  refresh: () => Promise<void>
+  isStale: boolean
 }
 
-export function Timeline({ pollInterval }: TimelineProps = {}) {
-  const { data, loading, error, refresh, isStale } = useDiary({ pollInterval })
-  const { data: agentsData } = useAgents()
-  const [filteredData, setFilteredData] = useState<DiarySession[]>(data)
+export function Timeline({ sessions, tasks, agentsData, loading, error, refresh, isStale }: TimelineProps) {
+  const [filteredData, setFilteredData] = useState<DiarySession[]>(sessions)
 
-  // Update filtered data when source data changes
   useEffect(() => {
-    setFilteredData(data)
-  }, [data])
+    setFilteredData(sessions)
+  }, [sessions])
 
-  // Show loading spinner only on initial load
-  if (loading && data.length === 0) {
+  if (loading && sessions.length === 0) {
     return <LoadingSpinner />
   }
 
-  // Show error message
-  if (error && data.length === 0) {
+  if (error && sessions.length === 0) {
     return <ErrorMessage error={error} onRetry={refresh} />
   }
 
-  // Show empty state
-  if (data.length === 0) {
+  if (sessions.length === 0) {
     return <EmptyState />
   }
 
   return (
     <div className="timeline-container">
-      {/* Stale indicator (when polling updates) */}
       {isStale && (
         <div className="stale-indicator">
           Updating...
         </div>
       )}
 
-      {/* Filters */}
       <TimelineFilters
-        sessions={data}
+        sessions={sessions}
         agentsData={agentsData}
         onFilterChange={setFilteredData}
       />
 
-      {/* Timeline entries */}
+      <div className="lane-summary-strip">
+        <span>{filteredData.length} visible sessions</span>
+        <span>{tasks.length} tracked tasks</span>
+        <span>{filteredData.filter((session) => session.handoffs.length > 0).length} sessions with handoffs</span>
+      </div>
+
       <div className="timeline-list">
         {filteredData.length === 0 ? (
           <div className="no-results">
@@ -73,8 +70,7 @@ export function Timeline({ pollInterval }: TimelineProps = {}) {
         ))}
       </div>
 
-      {/* Error banner (if error occurs after initial load) */}
-      {error && data.length > 0 && (
+      {error && sessions.length > 0 && (
         <div className="error-banner">
           <p className="error-banner-text">
             Failed to fetch latest updates: {error.message}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kbllr.com/schemas/leagentdiary/agent.profile.v1.schema.json",
+  "title": "LeAgentDiary Agent Profile v1",
+  "type": "object",
+  "required": ["id", "agent_handle", "house_id", "status", "identity", "questionnaire", "media", "visibility"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "id": { "type": "string" },
+    "agent_handle": { "type": "string" },
+    "house_id": { "type": "string" },
+    "status": { "enum": ["active", "inactive", "archived"] },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "identity": {
+      "type": "object",
+      "required": ["display_name"],
+      "properties": {
+        "display_name": { "type": "string" },
+        "self_chosen_name": { "type": "string" },
+        "role": { "type": "string" },
+        "category": { "type": "string" },
+        "origin_mode": { "type": "string" }
+      }
+    },
+    "questionnaire": {
+      "type": "object",
+      "properties": {
+        "bio": { "type": "string" },
+        "working_style": { "type": "string" },
+        "strengths": { "type": "array", "items": { "type": "string" } },
+        "constraints": { "type": "array", "items": { "type": "string" } },
+        "favorite_animal": { "type": "string" },
+        "favorite_song": { "type": "string" },
+        "themes": { "type": "array", "items": { "type": "string" } },
+        "signature": { "type": "string" }
+      }
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "portrait_prompt": { "type": "string" },
+        "portrait_image_refs": { "type": "array", "items": { "type": "string" } },
+        "manual_stage_prompt": { "type": "string" },
+        "stage_scene_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "visibility": {
+      "type": "object",
+      "required": ["internal", "public_excerpt_allowed"],
+      "properties": {
+        "internal": { "type": "boolean" },
+        "public_excerpt_allowed": { "type": "boolean" }
+      }
+    },
+    "notion": {
+      "type": "object",
+      "properties": {
+        "profile_page_id": { "type": "string" },
+        "journal_page_ids": { "type": "array", "items": { "type": "string" } },
+        "task_page_ids": { "type": "array", "items": { "type": "string" } },
+        "workspace": { "type": "string" }
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

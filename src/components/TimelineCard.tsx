@@ -1,11 +1,6 @@
-/**
- * Timeline Card Component
- * Displays a single HTDI session with hand-in/hand-off details
- */
-
-import { useState } from 'react'
-import type { DiarySession, AgentsResponse } from '../types'
-import { findAgentByHandle, getCategoryColor, formatCategory } from '../utils/agent-utils'
+import { useMemo, useState } from 'react'
+import type { AgentsResponse, DiarySession } from '../types'
+import { findAgentByHandle, formatCategory, getCategoryColor } from '../utils/agent-utils'
 
 interface TimelineCardProps {
   session: DiarySession
@@ -15,6 +10,10 @@ interface TimelineCardProps {
 
 export function TimelineCard({ session, agentsData, defaultExpanded = false }: TimelineCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded)
+  const orderedInteractions = useMemo(
+    () => [...session.interactions].sort((left, right) => left.at.localeCompare(right.at)),
+    [session.interactions]
+  )
 
   if (!session.handIn || !session.handOff) {
     return null
@@ -48,8 +47,8 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
   const contributionsCount = session.handOff.contributions.length
   const filesCount = session.handOff.filesTouched.length
-  const actionablesCount = session.handOff.actionablesForNextAgent.length
   const questionsCount = session.handOff.openQuestions.length
+  const reflection = session.reflection
 
   return (
     <div className="timeline-item">
@@ -87,7 +86,7 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
               </div>
 
               <p className="card-title">
-                {session.handIn.initialfocus}
+                {session.initial_focus || session.handIn.initialfocus}
               </p>
 
               <div className="agent-info">
@@ -122,9 +121,7 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
             </svg>
           </div>
 
-          <div
-            className={`timeline-card-body${expanded ? ' expanded' : ''}`}
-          >
+          <div className={`timeline-card-body${expanded ? ' expanded' : ''}`}>
             <div className="timeline-card-content">
               {agentInfo && (
                 <div className="card-section">
@@ -145,12 +142,21 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               <div className="card-section">
                 <p className="card-text">
-                  <span className="card-text-label">Export signals: </span>
+                  <span className="card-text-label">Process signals: </span>
                   <span className="card-text-value">
-                    {contributionsCount} contributions • {filesCount} files • {actionablesCount} actionables • {questionsCount} open questions
+                    {orderedInteractions.length} interactions • {session.tasks.length} tasks • {session.handoffs.length} handoffs • {questionsCount} open questions
                   </span>
                 </p>
               </div>
+
+              {session.repo_id && (
+                <div className="card-section">
+                  <p className="card-text">
+                    <span className="card-text-label">Repo: </span>
+                    <span className="card-text-value">{session.repo_id}</span>
+                  </p>
+                </div>
+              )}
 
               {session.handIn.favoritesong && (
                 <div className="card-section">
@@ -161,11 +167,27 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
+              {orderedInteractions.length > 0 && (
+                <div className="card-section">
+                  <h4 className="card-section-title">Interaction Log ({orderedInteractions.length})</h4>
+                  <div className="interaction-log">
+                    {orderedInteractions.map((interaction) => (
+                      <div key={interaction.id} className="interaction-item">
+                        <div className="interaction-meta">
+                          <span className="badge">{interaction.type}</span>
+                          <span>{formatTimestamp(interaction.at)}</span>
+                        </div>
+                        <p className="card-text-value">{interaction.summary}</p>
+                        {interaction.content_md && <p className="file-note">{interaction.content_md}</p>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {contributionsCount > 0 && (
                 <div className="card-section">
-                  <h4 className="card-section-title">
-                    Contributions ({contributionsCount})
-                  </h4>
+                  <h4 className="card-section-title">Contributions ({contributionsCount})</h4>
                   <ul className="card-list">
                     {session.handOff.contributions.map((contribution, idx) => (
                       <li key={idx} className="card-list-item">
@@ -179,37 +201,28 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {filesCount > 0 && (
                 <div className="card-section">
-                  <h4 className="card-section-title">
-                    Files Touched ({filesCount})
-                  </h4>
+                  <h4 className="card-section-title">Files Touched ({filesCount})</h4>
                   <div>
                     {session.handOff.filesTouched.slice(0, 5).map((file, idx) => (
                       <div key={idx} className="file-item">
                         <code className="file-path">{file.path}</code>
-                        {file.note && (
-                          <p className="file-note">{file.note}</p>
-                        )}
+                        {file.note && <p className="file-note">{file.note}</p>}
                       </div>
                     ))}
-                    {filesCount > 5 && (
-                      <p className="file-note">
-                        +{filesCount - 5} more files
-                      </p>
-                    )}
+                    {filesCount > 5 && <p className="file-note">+{filesCount - 5} more files</p>}
                   </div>
                 </div>
               )}
 
-              {actionablesCount > 0 && (
+              {session.tasks.length > 0 && (
                 <div className="card-section">
-                  <h4 className="card-section-title">
-                    Actionables for Next Agent
-                  </h4>
+                  <h4 className="card-section-title">Tasks ({session.tasks.length})</h4>
                   <ul className="card-list">
-                    {session.handOff.actionablesForNextAgent.map((actionable, idx) => (
-                      <li key={idx} className="card-list-item">
+                    {session.tasks.map((task) => (
+                      <li key={task.task_id} className="card-list-item">
                         <span className="list-bullet list-bullet-warning">→</span>
-                        <span style={{ color: 'var(--color-warning)' }}>{actionable}</span>
+                        <span style={{ color: 'var(--color-warning)' }}>{task.title}</span>
+                        <span className="agent-role">• {task.status}</span>
                       </li>
                     ))}
                   </ul>
@@ -218,9 +231,7 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
               {questionsCount > 0 && (
                 <div className="card-section">
-                  <h4 className="card-section-title">
-                    Open Questions
-                  </h4>
+                  <h4 className="card-section-title">Open Questions</h4>
                   <ul className="card-list">
                     {session.handOff.openQuestions.map((question, idx) => (
                       <li key={idx} className="card-list-item">
@@ -229,6 +240,53 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {session.handoffs.length > 0 && (
+                <div className="card-section">
+                  <h4 className="card-section-title">Handoffs ({session.handoffs.length})</h4>
+                  {session.handoffs.map((handoff, idx) => (
+                    <div key={`${session.sessionId}-handoff-${idx}`} className="handoff-card">
+                      <p className="card-text">
+                        <span className="card-text-label">Reason: </span>
+                        <span className="card-text-value">{handoff.reason || 'Pending'}</span>
+                      </p>
+                      {handoff.actionables.length > 0 && (
+                        <ul className="card-list">
+                          {handoff.actionables.map((actionable, actionIdx) => (
+                            <li key={actionIdx} className="card-list-item">
+                              <span className="list-bullet">•</span>
+                              <span>{actionable}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {reflection && (
+                <div className="card-section">
+                  <h4 className="card-section-title">Reflection</h4>
+                  <p className="card-text-value">{reflection.summary}</p>
+                  {reflection.learnings.length > 0 && (
+                    <ul className="card-list">
+                      {reflection.learnings.map((learning, idx) => (
+                        <li key={idx} className="card-list-item">
+                          <span className="list-bullet">•</span>
+                          <span>{learning}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <div className="lane-summary-strip" style={{ marginTop: 'var(--spacing-sm)' }}>
+                    <span>{reflection.visibility}</span>
+                    <span>{reflection.status}</span>
+                    {reflection.anthology_ingest_candidate && <span>Anthology-ready</span>}
+                    {reflection.public_excerpt_candidate && <span>Belle candidate</span>}
+                  </div>
                 </div>
               )}
 

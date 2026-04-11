@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kbllr.com/schemas/leagentdiary/diary.session.v2.schema.json",
+  "title": "LeAgentDiary Session v2",
+  "type": "object",
+  "required": ["sessionId", "profile_ref", "interactions", "tasks", "handoffs", "artifact_refs"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "id": { "type": "string" },
+    "sessionId": { "type": "string" },
+    "session_ref": { "type": "string" },
+    "source": { "type": "string" },
+    "repo_id": { "type": "string" },
+    "house_id": { "type": "string" },
+    "agent_handle": { "type": "string" },
+    "profile_ref": { "type": "string" },
+    "started_at": { "type": "string" },
+    "ended_at": { "type": "string" },
+    "status": { "enum": ["success", "error", "in_progress"] },
+    "initial_focus": { "type": "string" },
+    "interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "at", "type", "actor_handle", "summary", "artifact_refs", "tags", "visibility"],
+        "properties": {
+          "id": { "type": "string" },
+          "at": { "type": "string" },
+          "type": { "enum": ["note", "task", "task_update", "handoff", "reflection_note", "artifact", "decision"] },
+          "actor_handle": { "type": "string" },
+          "summary": { "type": "string" },
+          "content_md": { "type": "string" },
+          "artifact_refs": { "type": "array", "items": { "type": "string" } },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "visibility": { "enum": ["internal", "anthology", "public"] },
+          "metadata": { "type": "object" }
+        }
+      }
+    },
+    "tasks": { "type": "array", "items": { "$ref": "./task.record.v1.schema.json" } },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "to_agent_handle": { "type": "string" },
+          "reason": { "type": "string" },
+          "actionables": { "type": "array", "items": { "type": "string" } },
+          "open_questions": { "type": "array", "items": { "type": "string" } },
+          "task_refs": { "type": "array", "items": { "type": "string" } },
+          "source_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "reflection": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "learnings": { "type": "array", "items": { "type": "string" } },
+        "next_actions": { "type": "array", "items": { "type": "string" } },
+        "status": { "enum": ["draft", "ready", "approved", "archived"] },
+        "visibility": { "enum": ["internal", "anthology", "public"] },
+        "anthology_ingest_candidate": { "type": "boolean" },
+        "public_excerpt_candidate": { "type": "boolean" },
+        "belle_story_slug": { "type": "string" },
+        "notion_page_id": { "type": "string" },
+        "metadata": { "type": "object" }
+      }
+    },
+    "artifact_refs": { "type": "array", "items": { "type": "string" } },
+    "visibility": { "enum": ["internal", "anthology", "public"] },
+    "metadata": { "type": "object" }
+  }
+}

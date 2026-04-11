@@ -1,29 +1,41 @@
 # LeAgentDiary
 
-LeAgentDiary is the internal process and journal surface in the Core-X stack.
+LeAgentDiary is the internal intake and review surface for agent profiles, session chronology, handoffs, tasks, and curated reflections in the Core-X stack.
 
-It exists to review HTDI session chronology, inspect handoffs, and produce curated `trace.reflection` exports for Anthology. It is not the canonical archive, not the editorial layer, and not a stage platform.
+It sits upstream of Anthology and downstream of HTDI:
+- HTDI owns the canonical runtime objects and any stage-facing references.
+- LeAgentDiary edits and reviews those objects.
+- Anthology ingests curated `trace.reflection`.
+- Le Belle Epoch publishes approved public-safe diary stories in its `Le Agent Diary` lane.
+
+This house is not the canonical archive, not the public editorial surface, and not the owner of 3D runtime/stage productization.
 
 ## Active boundary
-- LeAgentDiary owns timeline review and curated reflection export.
+- LeAgentDiary owns profile intake, chronology review, handoff/task inspection, and deterministic export preparation.
+- HTDI owns canonical `agent.profile.v1`, `diary.session.v2`, and `task.record.v1` data.
 - Anthology owns ingest, archive, and downstream compilation.
 - Le Belle Epoch owns public/editorial presentation.
+- Notion is a mirror/workspace, never the source of truth.
 
 ## Active runtime
-- Vite + React + TypeScript timeline app
-- HTDI client with required `GET /diary` and optional `GET /agents`
+- Vite + React + TypeScript intake/review app
+- HTDI client with required `GET /diary`
+- Optional HTDI endpoints: `GET /agents`, `GET/PUT /profiles`, `GET/PUT /tasks`, `PUT /sessions/:sessionId/reflection`
 - Deterministic export script at `scripts/export-traces.mjs`
 
-## Experimental boundary
-Experimental stage and scene material has been quarantined under `experimental/stage/`.
+## House-local contracts
+- `schemas/agent.profile.v1.schema.json`
+- `schemas/diary.session.v2.schema.json`
+- `schemas/task.record.v1.schema.json`
 
-That preserved material is reference-only and does not participate in the default app runtime, build, or export flow.
-
-## Shared contracts
+These are house-local runtime contracts. Shared ecosystem contracts remain:
 - `core-x/schemas/trace.session.schema.json`
 - `core-x/schemas/trace.reflection.schema.json`
 
-These contracts are the seam into Anthology.
+## Experimental boundary
+Experimental stage and scene material remains quarantined under `experimental/stage/`.
+
+That preserved material is reference-only and does not participate in the default app runtime, build, or export flow.
 
 ## Development
 
@@ -32,7 +44,7 @@ These contracts are the seam into Anthology.
 npm install
 ```
 
-### Run the timeline app
+### Run the intake/review app
 ```bash
 npm run dev
 ```
@@ -44,7 +56,7 @@ UI: `http://localhost:5170`
 npm run build
 ```
 
-### Export fixture traces
+### Export fixture traces and profiles
 ```bash
 npm run export:traces -- --source-file fixtures/htdi.diary.sample.json
 ```
@@ -52,9 +64,10 @@ npm run export:traces -- --source-file fixtures/htdi.diary.sample.json
 Outputs:
 - `exports/trace.session/`
 - `exports/trace.reflection/`
+- `exports/agent.profile/`
 - `exports/manifest.json`
 
-`trace.session` is provenance/evidence only. `trace.reflection` is the curated Anthology ingest seam.
+`trace.session` is provenance/evidence only. `trace.reflection` is the curated Anthology ingest seam. `agent.profile` is house-local for HTDI/Notion/Belle-side workflows.
 
 ### Verify the active lane
 ```bash
@@ -78,11 +91,34 @@ This runs:
 
 See [`.env.example`](/Users/davidcaballero/core-x-kbllr_0/houses/Leagentdiary/.env.example).
 
+## Notion mirror
+
+Notion is a mirrored workspace for:
+- per-agent profile pages
+- per-agent journal/experience pages
+- a cross-house tasks table
+
+Recommended skills and tool flow:
+- `notion-knowledge-capture`
+- `notion-research-documentation`
+- `Notion:notion-search`
+- `Notion:notion-fetch`
+- `Notion:notion-create-pages`
+- `Notion:notion-update-page`
+
+If the Notion MCP is not connected yet, use:
+- `codex mcp add notion --url https://mcp.notion.com/mcp`
+- `codex --enable rmcp_client`
+- `codex mcp login notion`
+
+See [docs/notion-mirror.md](/Users/davidcaballero/core-x-kbllr_0/houses/Leagentdiary/docs/notion-mirror.md).
+
 ## Data flow
 ```text
-HTDI diary sessions
-  -> LeAgentDiary timeline review
-  -> trace.session + trace.reflection exports
+HTDI canonical profiles + sessions + tasks
+  -> LeAgentDiary profile/timeline/review lanes
+  -> trace.session + trace.reflection + agent.profile exports
   -> Anthology ingest/archive layer
-  -> downstream editorial surfaces
+  -> curated Belle "Le Agent Diary" publication lane
+  -> optional mirrored Notion profile and journal pages
 ```

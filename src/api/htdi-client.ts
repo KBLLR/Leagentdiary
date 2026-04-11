@@ -1,10 +1,19 @@
 /**
  * HTDI API client for the active diary lane.
  * Required endpoint: GET /diary
- * Optional endpoint: GET /agents
+ * Optional endpoints: GET /agents, GET/PUT /profiles, GET/PUT /tasks
  */
 
-import type { DiaryResponse, DiarySession, AgentsResponse } from '../types'
+import type {
+  AgentProfile,
+  AgentsResponse,
+  DiaryBundle,
+  DiaryResponse,
+  DiarySession,
+  DiaryReflection,
+  TaskRecord,
+} from '../types'
+import { normalizeDiaryBundle, normalizeDiaryResponse } from '../utils/diary-normalizers'
 
 const API_BASE = import.meta.env.VITE_HTDI_API_URL || 'http://localhost:3000/api'
 const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 10000
@@ -69,38 +78,158 @@ async function withRetry<T>(
   }
 }
 
-export async function fetchDiary(): Promise<DiarySession[]> {
+async function requestJson<T>(
+  path: string,
+  options: RequestInit = {},
+  { optional = false }: { optional?: boolean } = {}
+): Promise<T | null> {
+  const response = await fetchWithTimeout(`${API_BASE}${path}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+    ...options,
+  })
+
+  if (!response.ok) {
+    if (optional && [404, 405, 501].includes(response.status)) {
+      return null
+    }
+
+    let data: unknown
+    try {
+      data = await response.json()
+    } catch {
+      data = await response.text().catch(() => undefined)
+    }
+
+    throw new HTDIApiError(
+      `Failed request to ${path}: ${response.statusText}`,
+      response.status,
+      data
+    )
+  }
+
+  return await response.json() as T
+}
+
+export async function fetchDiaryBundle(): Promise<DiaryBundle> {
   return withRetry(async () => {
     if (DEBUG) {
-      console.log('[HTDI API] Fetching diary sessions...')
+      console.log('[HTDI API] Fetching diary bundle...')
     }
 
-    const response = await fetchWithTimeout(`${API_BASE}/diary`)
+    const data = await requestJson<DiaryResponse>('/diary')
 
-    if (!response.ok) {
-      throw new HTDIApiError(
-        `Failed to fetch diary: ${response.statusText}`,
-        response.status
-      )
+    if (!data || !Array.isArray(data.sessions)) {
+      throw new HTDIApiError('Invalid diary response format - missing sessions')
     }
 
-    const data = await response.json() as DiaryResponse
-
-    if (!Array.isArray(data.sessions)) {
-      throw new HTDIApiError('Invalid diary response format - missing sessions', response.status, data)
-    }
-
-    const validSessions = data.sessions.filter((session) => (
-      session.sessionId !== '<ISO_TIMESTAMP>' &&
-      session.handIn !== null &&
-      session.handOff !== null
-    )) as DiarySession[]
+    const normalized = normalizeDiaryBundle(normalizeDiaryResponse(data))
 
     if (DEBUG) {
-      console.log('[HTDI API] Diary sessions fetched:', validSessions.length, 'valid sessions')
+      console.log('[HTDI API] Diary bundle fetched:', {
+        sessions: normalized.sessions.length,
+        profiles: normalized.profiles.length,
+        tasks: normalized.tasks.length,
+      })
     }
 
-    return validSessions
+    return normalized
+  })
+}
+
+export async function fetchDiary(): Promise<DiarySession[]> {
+  const bundle = await fetchDiaryBundle()
+  return bundle.sessions
+}
+
+export async function fetchProfiles(): Promise<AgentProfile[]> {
+  return withRetry(async () => {
+    if (DEBUG) {
+      console.log('[HTDI API] Fetching profiles...')
+    }
+
+    const explicitProfiles = await requestJson<AgentProfile[]>('/profiles', {}, { optional: true })
+
+    if (Array.isArray(explicitProfiles)) {
+      return normalizeDiaryBundle({
+        generatedAt: new Date().toISOString(),
+        source: `${API_BASE}/profiles`,
+        sessions: [],
+        profiles: explicitProfiles,
+        tasks: [],
+      }).profiles
+    }
+
+    return (await fetchDiaryBundle()).profiles
+  })
+}
+
+export async function saveProfile(agentHandle: string, profile: AgentProfile): Promise<AgentProfile> {
+  return withRetry(async () => {
+    const saved = await requestJson<AgentProfile>(
+      `/profiles/${encodeURIComponent(agentHandle)}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(profile),
+      }
+    )
+
+    if (!saved) {
+      throw new HTDIApiError(`Profile save failed for ${agentHandle}`)
+    }
+
+    return saved
+  })
+}
+
+export async function fetchTasks(): Promise<TaskRecord[]> {
+  return withRetry(async () => {
+    const explicitTasks = await requestJson<TaskRecord[]>('/tasks', {}, { optional: true })
+
+    if (Array.isArray(explicitTasks)) {
+      return explicitTasks
+    }
+
+    return (await fetchDiaryBundle()).tasks
+  })
+}
+
+export async function saveTask(taskId: string, task: TaskRecord): Promise<TaskRecord> {
+  return withRetry(async () => {
+    const saved = await requestJson<TaskRecord>(
+      `/tasks/${encodeURIComponent(taskId)}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(task),
+      }
+    )
+
+    if (!saved) {
+      throw new HTDIApiError(`Task save failed for ${taskId}`)
+    }
+
+    return saved
+  })
+}
+
+export async function saveSessionReflection(sessionId: string, reflection: DiaryReflection): Promise<DiaryReflection> {
+  return withRetry(async () => {
+    const saved = await requestJson<DiaryReflection>(
+      `/sessions/${encodeURIComponent(sessionId)}/reflection`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(reflection),
+      }
+    )
+
+    if (!saved) {
+      throw new HTDIApiError(`Reflection save failed for ${sessionId}`)
+    }
+
+    return saved
   })
 }
 
@@ -110,21 +239,8 @@ export async function fetchAgents(): Promise<AgentsResponse> {
       console.log('[HTDI API] Fetching agent registry...')
     }
 
-    const response = await fetchWithTimeout(`${API_BASE}/agents`)
+    const data = await requestJson<AgentsResponse>('/agents', {}, { optional: true })
 
-    if (!response.ok) {
-      throw new HTDIApiError(
-        `Failed to fetch agents: ${response.statusText}`,
-        response.status
-      )
-    }
-
-    const data = await response.json() as AgentsResponse
-
-    if (DEBUG) {
-      console.log('[HTDI API] Agents fetched:', data.houses?.length || 0, 'houses')
-    }
-
-    return data
+    return data || { generatedAt: '', houses: [] }
   })
 }

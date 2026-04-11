@@ -7,14 +7,140 @@
   "repos": [
     "core-x-kbllr_0"
   ],
+  "profiles": [
+    {
+      "schema_version": "1.0.0",
+      "id": "agent:anja",
+      "agent_handle": "anja",
+      "house_id": "leagentdiary",
+      "status": "active",
+      "created_at": "2026-03-30T10:15:00Z",
+      "updated_at": "2026-03-30T11:20:00Z",
+      "identity": {
+        "display_name": "Anja",
+        "self_chosen_name": "Anja",
+        "role": "Reflection editor",
+        "category": "worker",
+        "origin_mode": "self-determined"
+      },
+      "questionnaire": {
+        "bio": "Reflection-oriented editor focused on chronology, export seams, and public-safe handoff narratives.",
+        "working_style": "Concise, archival, and review-heavy.",
+        "strengths": ["reflection", "editing", "handoff structure"],
+        "constraints": ["needs clear publication boundaries"],
+        "favorite_animal": "otter",
+        "favorite_song": "Digital Love",
+        "themes": ["archive", "editorial", "handoffs"],
+        "signature": "anja::handoff"
+      },
+      "media": {
+        "portrait_prompt": "Portrait of Anja as a reflective editorial agent surrounded by archival note cards and brass index drawers.",
+        "portrait_image_refs": ["media/agents/anja/portrait-01.png"],
+        "manual_stage_prompt": "Build a quiet editorial study with index drawers, warm desk lamps, and open paper traces.",
+        "stage_scene_refs": ["htdi:scene:anja-study"]
+      },
+      "visibility": {
+        "internal": true,
+        "public_excerpt_allowed": true
+      },
+      "notion": {
+        "profile_page_id": "notion-profile-anja",
+        "journal_page_ids": ["notion-journal-anja-2026-03-30"],
+        "task_page_ids": ["notion-task-belle-lane"],
+        "workspace": "kbllr-core-x"
+      },
+      "metadata": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "agent:bork",
+      "agent_handle": "bork",
+      "house_id": "leagentdiary",
+      "status": "active",
+      "created_at": "2026-03-30T13:45:00Z",
+      "updated_at": "2026-03-30T14:00:00Z",
+      "identity": {
+        "display_name": "Bork",
+        "self_chosen_name": "Bork",
+        "role": "Build verifier",
+        "category": "worker",
+        "origin_mode": "deployed"
+      },
+      "questionnaire": {
+        "bio": "Verification-focused builder who checks the current lane without widening product scope.",
+        "working_style": "Blunt, practical, verification-first.",
+        "strengths": ["build health", "scripts", "verification"],
+        "constraints": ["avoids speculative expansion"],
+        "favorite_animal": "crow",
+        "favorite_song": "No Surprises",
+        "themes": ["stability", "validation"],
+        "signature": "bork::handoff"
+      },
+      "media": {
+        "portrait_prompt": "Portrait of Bork as a systems verifier with terminal overlays and pinned build outputs.",
+        "portrait_image_refs": [],
+        "manual_stage_prompt": "Industrial build lab with subtle warning lights and console strips.",
+        "stage_scene_refs": []
+      },
+      "visibility": {
+        "internal": true,
+        "public_excerpt_allowed": false
+      },
+      "notion": {
+        "profile_page_id": "",
+        "journal_page_ids": [],
+        "task_page_ids": [],
+        "workspace": "kbllr-core-x"
+      },
+      "metadata": {}
+    }
+  ],
+  "tasks": [
+    {
+      "schema_version": "1.0.0",
+      "id": "task-belle-lane",
+      "task_id": "task-belle-lane",
+      "title": "Define the Le Agent Diary public lane",
+      "description": "Add a Belle lane that publishes only curated diary-derived stories.",
+      "status": "in_progress",
+      "priority": "medium",
+      "assignee": "anja",
+      "house_id": "leagentdiary",
+      "session_refs": ["2026-03-30T10:15:00Z"],
+      "handoff_refs": ["handoff:2026-03-30T10:15:00Z"],
+      "open_questions": ["Should profiles be public by default?"],
+      "source_refs": ["houses/le-belle-epoch/README.md"],
+      "created_at": "2026-03-30T10:45:00Z",
+      "updated_at": "2026-03-30T11:15:00Z",
+      "notion_page_id": "notion-task-belle-lane",
+      "metadata": {}
+    }
+  ],
   "sessions": [
     {
       "sessionId": "<ISO_TIMESTAMP>",
       "handIn": null,
-      "handOff": null
+      "handOff": null,
+      "interactions": [],
+      "tasks": [],
+      "handoffs": [],
+      "artifact_refs": [],
+      "metadata": {}
     },
     {
+      "schema_version": "2.0.0",
+      "id": "session:2026-03-30T10:15:00Z:anja",
       "sessionId": "2026-03-30T10:15:00Z",
+      "session_ref": "2026-03-30T10:15:00Z",
+      "source": "htdi",
+      "repo_id": "core-x-kbllr_0",
+      "house_id": "leagentdiary",
+      "agent_handle": "anja",
+      "profile_ref": "agent:anja",
+      "started_at": "2026-03-30T10:15:00Z",
+      "ended_at": "2026-03-30T11:20:00Z",
+      "status": "success",
+      "initial_focus": "Align the Anthology and Belle Epoch editorial surfaces.",
       "handIn": {
         "selfchosenname": "Anja",
         "agenthandle": "anja",
@@ -48,10 +174,129 @@
         ],
         "legacySignature": "anja::handoff",
         "datetimebacktosource": "2026-03-30T11:20:00Z"
-      }
+      },
+      "interactions": [
+        {
+          "id": "evt-001",
+          "at": "2026-03-30T10:16:00Z",
+          "type": "note",
+          "actor_handle": "anja",
+          "summary": "Reviewed Belle publication lanes.",
+          "content_md": "Confirmed MLX News, Development Stories, Explainers, and Prompt Sanctuary are already curated editorial lanes.",
+          "artifact_refs": ["houses/le-belle-epoch/README.md"],
+          "tags": ["research", "belle"],
+          "visibility": "internal",
+          "metadata": {}
+        },
+        {
+          "id": "evt-002",
+          "at": "2026-03-30T10:45:00Z",
+          "type": "task",
+          "actor_handle": "anja",
+          "summary": "Define the Le Agent Diary public lane",
+          "artifact_refs": ["houses/le-belle-epoch/README.md"],
+          "tags": ["task", "belle"],
+          "visibility": "internal",
+          "task": {
+            "task_id": "task-belle-lane",
+            "title": "Define the Le Agent Diary public lane",
+            "status": "in_progress",
+            "priority": "medium",
+            "assignee": "anja"
+          },
+          "metadata": {}
+        },
+        {
+          "id": "evt-003",
+          "at": "2026-03-30T11:15:00Z",
+          "type": "handoff",
+          "actor_handle": "anja",
+          "summary": "Prepared a Belle implementation handoff.",
+          "content_md": "Next pass should add the lane, keep publication curated, and avoid exposing raw timeline data.",
+          "artifact_refs": ["houses/le-belle-epoch/README.md"],
+          "tags": ["handoff"],
+          "visibility": "internal",
+          "handoff": {
+            "to_agent_handle": "bork",
+            "reason": "Belle implementation pass",
+            "actionables": ["Add lane config", "Hook the new route into the publication shell"],
+            "open_questions": ["Should profiles be public by default?"],
+            "task_refs": ["task-belle-lane"],
+            "source_refs": ["houses/le-belle-epoch/README.md"]
+          },
+          "metadata": {}
+        }
+      ],
+      "tasks": [
+        {
+          "schema_version": "1.0.0",
+          "id": "task-belle-lane",
+          "task_id": "task-belle-lane",
+          "title": "Define the Le Agent Diary public lane",
+          "description": "Add a Belle lane that publishes only curated diary-derived stories.",
+          "status": "in_progress",
+          "priority": "medium",
+          "assignee": "anja",
+          "house_id": "leagentdiary",
+          "session_refs": ["2026-03-30T10:15:00Z"],
+          "handoff_refs": ["handoff:2026-03-30T10:15:00Z"],
+          "open_questions": ["Should profiles be public by default?"],
+          "source_refs": ["houses/le-belle-epoch/README.md"],
+          "created_at": "2026-03-30T10:45:00Z",
+          "updated_at": "2026-03-30T11:15:00Z",
+          "notion_page_id": "notion-task-belle-lane",
+          "metadata": {}
+        }
+      ],
+      "handoffs": [
+        {
+          "to_agent_handle": "bork",
+          "reason": "Belle implementation pass",
+          "actionables": ["Add lane config", "Hook the new route into the publication shell"],
+          "open_questions": ["Should profiles be public by default?"],
+          "task_refs": ["task-belle-lane"],
+          "source_refs": ["houses/le-belle-epoch/README.md"]
+        }
+      ],
+      "reflection": {
+        "summary": "Identified a clean Belle lane path without routing raw diary history into the public surface.",
+        "learnings": [
+          "Belle already has a multi-lane editorial builder.",
+          "Diary-derived material must become curated public stories rather than direct timeline dumps."
+        ],
+        "next_actions": [
+          "Add a Belle lane for Le Agent Diary stories.",
+          "Document the Notion mirror as non-authoritative."
+        ],
+        "status": "ready",
+        "visibility": "anthology",
+        "anthology_ingest_candidate": true,
+        "public_excerpt_candidate": true,
+        "belle_story_slug": "le-agent-diary-launch-plan",
+        "notion_page_id": "notion-journal-anja-2026-03-30",
+        "metadata": {}
+      },
+      "artifact_refs": [
+        "core-x/docs/architecture/archive-process-editorial-alignment.md",
+        "houses/le-belle-epoch/README.md"
+      ],
+      "visibility": "internal",
+      "metadata": {}
     },
     {
+      "schema_version": "2.0.0",
+      "id": "session:2026-03-30T13:45:00Z:bork",
       "sessionId": "2026-03-30T13:45:00Z",
+      "session_ref": "2026-03-30T13:45:00Z",
+      "source": "htdi",
+      "repo_id": "core-x-kbllr_0",
+      "house_id": "leagentdiary",
+      "agent_handle": "bork",
+      "profile_ref": "agent:bork",
+      "started_at": "2026-03-30T13:45:00Z",
+      "ended_at": "2026-03-30T14:00:00Z",
+      "status": "success",
+      "initial_focus": "Check build health after the alignment pass.",
       "handIn": {
         "selfchosenname": "Bork",
         "agenthandle": "bork",
@@ -68,7 +313,26 @@
         "openQuestions": [],
         "legacySignature": "bork::handoff",
         "datetimebacktosource": "2026-03-30T14:00:00Z"
-      }
+      },
+      "interactions": [
+        {
+          "id": "evt-bork-001",
+          "at": "2026-03-30T13:46:00Z",
+          "type": "note",
+          "actor_handle": "bork",
+          "summary": "Ran build and lint checks for the active lane.",
+          "content_md": "Verified the review/export runtime without reopening the stage surface.",
+          "artifact_refs": [],
+          "tags": ["verification"],
+          "visibility": "internal",
+          "metadata": {}
+        }
+      ],
+      "tasks": [],
+      "handoffs": [],
+      "artifact_refs": [],
+      "visibility": "internal",
+      "metadata": {}
     }
   ]
 }
