@@ -1,0 +1,132 @@
+{
+  "house_id": "leagentdiary",
+  "name": "LeAgentDiary",
+  "version": "1.0.0",
+  "status": "development",
+  "purpose": {
+    "domain": "dev-tools",
+    "mission": "Capture agent session chronology and curated reflections as an internal process journal, then hand high-signal exports to Anthology.",
+    "target_users": [
+      "ecosystem maintainers",
+      "agent operators",
+      "research collaborators"
+    ],
+    "key_outcomes": [
+      "Inspectable session chronology",
+      "Curated reflection exports",
+      "Cleaner handoff into Anthology"
+    ]
+  },
+  "personality": {
+    "voice": "LeAgentDiary acts as an internal process and reflection surface for the Core-X ecosystem.",
+    "tone": "professional",
+    "theme": {
+      "primary_color": "#0f172a",
+      "secondary_color": "#334155",
+      "icon": "leagentdiary"
+    }
+  },
+  "agents": {
+    "roster": [
+      {
+        "agent_id": "leagentdiary:process-curator",
+        "role_in_house": "lead",
+        "capabilities": [
+          "timeline-review",
+          "process-curation",
+          "handoff-detection"
+        ]
+      },
+      {
+        "agent_id": "leagentdiary:reflection-editor",
+        "role_in_house": "specialist",
+        "capabilities": [
+          "reflection",
+          "summarization",
+          "export-prep"
+        ]
+      }
+    ],
+    "default_agent": "leagentdiary:process-curator",
+    "routing_rules": [
+      {
+        "pattern": "reflection",
+        "capability": "reflection",
+        "agent_id": "leagentdiary:reflection-editor"
+      },
+      {
+        "pattern": "*",
+        "capability": "process-curation",
+        "agent_id": "leagentdiary:process-curator"
+      }
+    ]
+  },
+  "capabilities": {
+    "domains": [
+      "dev-tools",
+      "process-journal",
+      "timeline",
+      "reflection"
+    ],
+    "input_types": [
+      "file",
+      "text"
+    ],
+    "output_types": [
+      "structured",
+      "text"
+    ],
+    "streaming": false,
+    "tool_calling": true
+  },
+  "dependencies": {
+    "services": [],
+    "models": [],
+    "houses": [],
+    "mcp_servers": []
+  },
+  "skills": {
+    "house_skills": [
+      "process-review",
+      "reflection-export"
+    ],
+    "shared_skills": [
+      "core-ops"
+    ]
+  },
+  "policy": {
+    "primary_surface": "internal-process-journal",
+    "source_of_truth_for": [
+      "raw session chronology",
+      "curated reflections prior to Anthology ingest"
+    ],
+    "not_source_of_truth_for": [
+      "canonical research corpus",
+      "public editorial publication"
+    ],
+    "export_contracts": [
+      "trace.session",
+      "trace.reflection"
+    ],
+    "experimental_modules": [
+      "experimental/stage"
+    ]
+  },
+  "ui_modes": [
+    "dashboard",
+    "review"
+  ],
+  "council_integration": {
+    "broadcast_events": [
+      "leagentdiary.status",
+      "task.complete",
+      "health.pong"
+    ],
+    "subscribe_events": [
+      "task.request",
+      "council.directive",
+      "health.ping"
+    ],
+    "voting_weight": 0.4
+  }
+}

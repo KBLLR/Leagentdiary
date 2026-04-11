@@ -15,7 +15,7 @@ LeAgentDiary stitches together three upstreams plus a new stage orchestrator so 
 
 1. **Profile Sync** – Agents commit profiles under `code-platformer-AI/agents/profiles/`. A webhook (or CLI) calls `POST /v1/agents/profiles:sync` on the stage service with the agent metadata and S3 model keys.
 2. **Stage Generation** – The stage service groups related agents (same repo or task) and calls HTDI’s scene utilities to produce layouts, camera presets, and color palettes. Response payload includes a `stageId`, `sceneConfig`, and signed URLs for each model.
-3. **Timeline Update** – For every stage, the service posts to `POST /v1/timeline/events` (OpenAI API 3.1.0 compatible) so this repo can render an unfoldable card linking to the hosted scene and agent summaries.
+3. **Timeline Update** – For every stage, the service posts to `POST /v1/timeline/events` (OpenResponses API 3.1.0 compatible) so this repo can render an unfoldable card linking to the hosted scene and agent summaries.
 4. **Memory Commit** – The stage payload is mirrored into a provenance repo via `POST /v1/memory/snapshots`. A dedicated memory agent can later answer context queries via `/v1/memory/snapshots:query` when users chat with a scene.
 
 ## S3 Asset Strategy
@@ -24,9 +24,9 @@ LeAgentDiary stitches together three upstreams plus a new stage orchestrator so 
 - Contents: `model.glb`, texture atlases, metadata JSON.
 - Stage service mints signed URLs (via `gen_idea_lab` backend), keeps manifests in sync with HTDI’s `generate:assets` script, and exposes read-only links to the LeAgentDiary UI.
 
-## OpenAI API 3.1.0 Surface
+## OpenResponses API 3.1.0 Surface
 
-All new services expose OpenAI-compatible JSON over HTTPS:
+All new services expose OpenResponses-compatible JSON over HTTPS:
 
 | Endpoint | Method | Purpose |
 | --- | --- | --- |

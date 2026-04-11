@@ -1,0 +1,90 @@
+{
+  "$schema": "../../core-x/schemas/flow-manifest.schema.json",
+  "house_id": "leagentdiary",
+  "version": "1.0.0",
+  "description": "Internal process journal surface for reviewing HTDI-backed session traces and preparing curated reflection exports for Anthology.",
+  "items": [
+    {
+      "id": "leagentdiary:timeline-ui",
+      "type": "tool",
+      "status": "active",
+      "name": "Timeline UI",
+      "description": "Render HTDI diary sessions as an internal process timeline.",
+      "category": "ui",
+      "entry_point": "./src/components/Timeline.tsx",
+      "capabilities": [
+        "timeline",
+        "session-trace",
+        "review"
+      ],
+      "house_binding": "local",
+      "house_id": "leagentdiary"
+    },
+    {
+      "id": "leagentdiary:htdi-diary-client",
+      "type": "tool",
+      "status": "active",
+      "name": "HTDI Diary Client",
+      "description": "Fetch session chronology from the HTDI API backing the diary surface.",
+      "category": "integration",
+      "entry_point": "./src/api/htdi-client.ts",
+      "capabilities": [
+        "fetch",
+        "timeline",
+        "integration"
+      ],
+      "house_binding": "local",
+      "house_id": "leagentdiary",
+      "config": {
+        "api_base": "http://localhost:3000/api",
+        "required_endpoint": "GET /diary",
+        "optional_endpoint": "GET /agents"
+      }
+    },
+    {
+      "id": "leagentdiary:process-review",
+      "type": "skill",
+      "status": "active",
+      "name": "Process Review",
+      "description": "Internal workflow for browsing session traces and spotting notable handoffs.",
+      "category": "workflow",
+      "tools": [
+        "leagentdiary:htdi-diary-client",
+        "leagentdiary:timeline-ui"
+      ],
+      "house_id": "leagentdiary"
+    },
+    {
+      "id": "leagentdiary:reflection-export",
+      "type": "skill",
+      "status": "active",
+      "name": "Reflection Export",
+      "description": "Prepare deterministic high-signal reflections for Anthology ingest using the shared trace contracts.",
+      "category": "handoff",
+      "tools": [
+        "leagentdiary:htdi-diary-client"
+      ],
+      "house_id": "leagentdiary",
+      "config": {
+        "contracts": [
+          "core-x/schemas/trace.session.schema.json",
+          "core-x/schemas/trace.reflection.schema.json"
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "tech_stack": [
+      "vite",
+      "react",
+      "typescript"
+    ],
+    "category": "process-journal",
+    "shared_contracts": [
+      "core-x/schemas/trace.session.schema.json",
+      "core-x/schemas/trace.reflection.schema.json"
+    ],
+    "current_boundary": "Owns process traces and curated reflections, not the canonical research archive, stage platform, or public editorial packaging."
+  },
+  "updatedAt": "2026-04-11T00:00:00Z"
+}

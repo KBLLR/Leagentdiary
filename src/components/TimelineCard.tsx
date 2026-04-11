@@ -6,7 +6,6 @@
 import { useState } from 'react'
 import type { DiarySession, AgentsResponse } from '../types'
 import { findAgentByHandle, getCategoryColor, formatCategory } from '../utils/agent-utils'
-import { SceneViewer } from './SceneViewer'
 
 interface TimelineCardProps {
   session: DiarySession
@@ -17,12 +16,10 @@ interface TimelineCardProps {
 export function TimelineCard({ session, agentsData, defaultExpanded = false }: TimelineCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded)
 
-  // Null safety - shouldn't happen due to filtering, but TypeScript requires it
   if (!session.handIn || !session.handOff) {
     return null
   }
 
-  // Find agent in registry
   const agentInfo = findAgentByHandle(session.handIn.agenthandle, agentsData)
 
   const formatTimestamp = (timestamp: string) => {
@@ -49,71 +46,27 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
 
   const toggleExpanded = () => setExpanded(!expanded)
 
-  // Demo scene data - can be made dynamic later based on session data
-  const demoSceneData = {
-    camera: { position: [0, 2, 5] as [number, number, number], fov: 50 },
-    objects: [
-      {
-        type: 'sphere' as const,
-        position: [0, 1, 0] as [number, number, number],
-        color: '#818cf8',
-        scale: [0.8, 0.8, 0.8] as [number, number, number]
-      },
-      {
-        type: 'box' as const,
-        position: [-1.5, 0.5, 0] as [number, number, number],
-        color: '#10b981',
-        scale: [0.5, 0.5, 0.5] as [number, number, number]
-      },
-      {
-        type: 'cylinder' as const,
-        position: [1.5, 0.5, 0] as [number, number, number],
-        color: '#f59e0b',
-        scale: [0.4, 0.8, 0.4] as [number, number, number]
-      },
-      {
-        type: 'plane' as const,
-        position: [0, 0, 0] as [number, number, number],
-        color: '#333333',
-        scale: [10, 1, 10] as [number, number, number],
-        rotation: [-1.57, 0, 0] as [number, number, number]
-      }
-    ],
-    lights: [
-      { type: 'ambient' as const, color: '#404040', intensity: 0.5 },
-      {
-        type: 'directional' as const,
-        color: '#ffffff',
-        intensity: 0.8,
-        position: [5, 5, 5] as [number, number, number]
-      }
-    ]
-  }
+  const contributionsCount = session.handOff.contributions.length
+  const filesCount = session.handOff.filesTouched.length
+  const actionablesCount = session.handOff.actionablesForNextAgent.length
+  const questionsCount = session.handOff.openQuestions.length
 
   return (
     <div className="timeline-item">
-      {/* Timeline line */}
       <div className="timeline-line" />
-
-      {/* Timeline dot */}
       <div className="timeline-dot" />
 
-      {/* Card content */}
       <div className="timeline-content">
-        {/* Timestamp */}
         <time className="timeline-timestamp">
           {formatTimestamp(session.handIn.datetimesummon)}
         </time>
 
-        {/* Card */}
         <div className="timeline-card">
-          {/* Card header (trigger) */}
           <div
             onClick={toggleExpanded}
             className="timeline-card-header"
           >
             <div className="timeline-card-main">
-              {/* Badges and mode */}
               <div className="timeline-card-badges">
                 <span className={`badge ${getOriginModeClass(session.handIn.originmode)}`}>
                   {session.handIn.originmode}
@@ -133,12 +86,10 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 )}
               </div>
 
-              {/* Initial focus (main title) */}
               <p className="card-title">
                 {session.handIn.initialfocus}
               </p>
 
-              {/* Agent info */}
               <div className="agent-info">
                 <div className="agent-avatar">
                   <span>
@@ -156,7 +107,6 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
               </div>
             </div>
 
-            {/* Chevron icon */}
             <svg
               className={`chevron-icon${expanded ? ' expanded' : ''}`}
               fill="none"
@@ -172,12 +122,10 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
             </svg>
           </div>
 
-          {/* Collapsible content */}
           <div
             className={`timeline-card-body${expanded ? ' expanded' : ''}`}
           >
             <div className="timeline-card-content">
-              {/* Agent registry info */}
               {agentInfo && (
                 <div className="card-section">
                   {agentInfo.description && (
@@ -195,13 +143,15 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
-              {/* Scene Preview */}
               <div className="card-section">
-                <h4 className="card-section-title">Scene Preview</h4>
-                <SceneViewer sceneData={demoSceneData} autoRotate={true} />
+                <p className="card-text">
+                  <span className="card-text-label">Export signals: </span>
+                  <span className="card-text-value">
+                    {contributionsCount} contributions • {filesCount} files • {actionablesCount} actionables • {questionsCount} open questions
+                  </span>
+                </p>
               </div>
 
-              {/* Favorite song */}
               {session.handIn.favoritesong && (
                 <div className="card-section">
                   <p className="card-text">
@@ -211,11 +161,10 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
-              {/* Contributions */}
-              {session.handOff.contributions.length > 0 && (
+              {contributionsCount > 0 && (
                 <div className="card-section">
                   <h4 className="card-section-title">
-                    Contributions ({session.handOff.contributions.length})
+                    Contributions ({contributionsCount})
                   </h4>
                   <ul className="card-list">
                     {session.handOff.contributions.map((contribution, idx) => (
@@ -228,11 +177,10 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
-              {/* Files touched */}
-              {session.handOff.filesTouched.length > 0 && (
+              {filesCount > 0 && (
                 <div className="card-section">
                   <h4 className="card-section-title">
-                    Files Touched ({session.handOff.filesTouched.length})
+                    Files Touched ({filesCount})
                   </h4>
                   <div>
                     {session.handOff.filesTouched.slice(0, 5).map((file, idx) => (
@@ -243,17 +191,16 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                         )}
                       </div>
                     ))}
-                    {session.handOff.filesTouched.length > 5 && (
+                    {filesCount > 5 && (
                       <p className="file-note">
-                        +{session.handOff.filesTouched.length - 5} more files
+                        +{filesCount - 5} more files
                       </p>
                     )}
                   </div>
                 </div>
               )}
 
-              {/* Actionables for next agent */}
-              {session.handOff.actionablesForNextAgent.length > 0 && (
+              {actionablesCount > 0 && (
                 <div className="card-section">
                   <h4 className="card-section-title">
                     Actionables for Next Agent
@@ -269,8 +216,7 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
-              {/* Open questions */}
-              {session.handOff.openQuestions.length > 0 && (
+              {questionsCount > 0 && (
                 <div className="card-section">
                   <h4 className="card-section-title">
                     Open Questions
@@ -286,7 +232,6 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
-              {/* Legacy signature */}
               {session.handOff.legacySignature && (
                 <div className="card-section" style={{ paddingTop: 'var(--spacing-sm)', borderTop: '1px solid var(--color-border)' }}>
                   <p className="signature-text">
@@ -295,7 +240,6 @@ export function TimelineCard({ session, agentsData, defaultExpanded = false }: T
                 </div>
               )}
 
-              {/* Session metadata */}
               <div className="metadata-section">
                 <span>
                   Session: {formatTimestamp(session.handIn.datetimesummon)} → {formatTimestamp(session.handOff.datetimebacktosource)}

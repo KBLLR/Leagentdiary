@@ -2,18 +2,19 @@
   "name": "leagentdiary",
   "private": true,
   "version": "0.1.0",
+  "description": "Internal process and journal surface for agent session traces and curated reflections",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "dev": "node ./node_modules/vite/bin/vite.js",
+    "build": "node ./node_modules/typescript/bin/tsc && node ./node_modules/vite/bin/vite.js build",
+    "preview": "node ./node_modules/vite/bin/vite.js preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "export:traces": "node scripts/export-traces.mjs",
+    "verify:active": "node scripts/verify-active.mjs"
   },
   "dependencies": {
-    "@types/three": "^0.181.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "three": "^0.181.1"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.5",

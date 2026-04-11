@@ -17,7 +17,7 @@ export function Header() {
           </div>
           <div>
             <h1 className="header-title">LeAgentDiary</h1>
-            <p className="header-subtitle">Agentic Timeline Viewer</p>
+            <p className="header-subtitle">Process Journal for Anthology Handoffs</p>
           </div>
         </div>
 

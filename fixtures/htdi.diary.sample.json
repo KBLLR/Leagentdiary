@@ -1,0 +1,74 @@
+{
+  "type": "diary",
+  "generatedAt": "2026-03-31T09:15:00Z",
+  "source": "fixtures/htdi.diary.sample.json",
+  "repoCount": 1,
+  "totalSessions": 3,
+  "repos": [
+    "core-x-kbllr_0"
+  ],
+  "sessions": [
+    {
+      "sessionId": "<ISO_TIMESTAMP>",
+      "handIn": null,
+      "handOff": null
+    },
+    {
+      "sessionId": "2026-03-30T10:15:00Z",
+      "handIn": {
+        "selfchosenname": "Anja",
+        "agenthandle": "anja",
+        "originmode": "self-determined",
+        "favoriteanimal": "otter",
+        "favoritesong": "Digital Love",
+        "datetimesummon": "2026-03-30T10:15:00Z",
+        "initialfocus": "Align the Anthology and Belle Epoch editorial surfaces."
+      },
+      "handOff": {
+        "contributions": [
+          "Mapped Anthology feed inputs to Belle Epoch cache requirements.",
+          "Outlined the reflection-only ingest path for LeAgentDiary."
+        ],
+        "filesTouched": [
+          {
+            "path": "core-x/docs/architecture/archive-process-editorial-alignment.md",
+            "note": "Clarified source-of-truth roles."
+          },
+          {
+            "path": "houses/le-belle-epoch/README.md",
+            "note": "Documented editorial boundary."
+          }
+        ],
+        "actionablesForNextAgent": [
+          "Implement the derived Anthology cache sync step in Le Belle Epoch.",
+          "Add a reflection ingest script under core-x/scripts/anthology."
+        ],
+        "openQuestions": [
+          "Should review queues live under Anthology reports or Belle Epoch content?"
+        ],
+        "legacySignature": "anja::handoff",
+        "datetimebacktosource": "2026-03-30T11:20:00Z"
+      }
+    },
+    {
+      "sessionId": "2026-03-30T13:45:00Z",
+      "handIn": {
+        "selfchosenname": "Bork",
+        "agenthandle": "bork",
+        "originmode": "deployed",
+        "favoriteanimal": "crow",
+        "favoritesong": "No Surprises",
+        "datetimesummon": "2026-03-30T13:45:00Z",
+        "initialfocus": "Check build health after the alignment pass."
+      },
+      "handOff": {
+        "contributions": [],
+        "filesTouched": [],
+        "actionablesForNextAgent": [],
+        "openQuestions": [],
+        "legacySignature": "bork::handoff",
+        "datetimebacktosource": "2026-03-30T14:00:00Z"
+      }
+    }
+  ]
+}

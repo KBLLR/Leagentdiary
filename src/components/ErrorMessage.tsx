@@ -28,7 +28,7 @@ export function ErrorMessage({ error, onRetry }: ErrorMessageProps) {
 
         <div style={{ flex: 1 }}>
           <h3 className="error-title">
-            Failed to load diary entries
+            Failed to load session chronology
           </h3>
           <p className="error-text">
             {error.message || 'An unexpected error occurred'}

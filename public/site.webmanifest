@@ -1,0 +1,58 @@
+{
+  "name": "Hard To Debug Issues",
+  "short_name": "HTDI",
+  "id": "/HTDI",
+  "description": "Interactive HTDI WebGL experience with scene presets, PBR tooling, and tweakable controls.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#060912",
+  "theme_color": "#0f1726",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/thumbnails/omega.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Omega Gradient Scene"
+    },
+    {
+      "src": "/thumbnails/era.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Era of Reflection Scene"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Scenes",
+      "short_name": "Scenes",
+      "description": "Jump directly to scene selection.",
+      "url": "/?action=scenes",
+      "icons": [{ "src": "/icons/appIcon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Music Player",
+      "short_name": "Music",
+      "description": "Access the in-app music player.",
+      "url": "/?action=music",
+      "icons": [{ "src": "/icons/appIcon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

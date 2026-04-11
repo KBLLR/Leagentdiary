@@ -3,6 +3,8 @@
  */
 
 export function EmptyState() {
+  const apiBase = import.meta.env.VITE_HTDI_API_URL || 'http://localhost:3000/api'
+
   return (
     <div className="empty-state">
       {/* Empty icon */}
@@ -21,14 +23,14 @@ export function EmptyState() {
       </svg>
 
       <h3 className="empty-state-title">
-        No diary entries yet
+        No session chronology yet
       </h3>
       <p className="empty-state-text" style={{ marginBottom: 'var(--spacing-lg)' }}>
-        Diary entries will appear here once agents start working on your repositories.
+        Diary sessions will appear here once HTDI starts writing handoffs for this house.
       </p>
 
       <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-        <p style={{ marginBottom: 'var(--spacing-xs)' }}>Make sure the HTDI Agentic Lab backend is running at:</p>
+        <p style={{ marginBottom: 'var(--spacing-xs)' }}>Required endpoint:</p>
         <code style={{
           display: 'block',
           background: 'var(--color-surface-hover)',
@@ -37,7 +39,7 @@ export function EmptyState() {
           color: 'var(--color-accent)',
           fontFamily: 'var(--font-mono)'
         }}>
-          {import.meta.env.VITE_HTDI_API_URL || 'http://localhost:3000/api'}
+          {`${apiBase}/diary`}
         </code>
       </div>
     </div>
