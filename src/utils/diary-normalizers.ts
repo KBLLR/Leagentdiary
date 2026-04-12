@@ -13,6 +13,8 @@ import type {
   TaskStatus,
   VisibilityLevel,
 } from '../types'
+import { ensurePortraitPromptPrefix } from './profile-prompts'
+import { applyProfileRitualMetadata } from './profile-ritual'
 
 const asRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' ? value as Record<string, unknown> : {}
@@ -417,7 +419,7 @@ const normalizeProfile = (value: unknown): AgentProfile => {
   const notion = asRecord(input.notion)
   const agentHandle = asString(input.agent_handle || identity.agent_handle || 'unknown')
 
-  return {
+  return applyProfileRitualMetadata({
     schema_version: asString(input.schema_version || '1.0.0'),
     id: asString(input.id || buildProfileId(agentHandle)),
     agent_handle: agentHandle,
@@ -430,6 +432,8 @@ const normalizeProfile = (value: unknown): AgentProfile => {
       self_chosen_name: asString(identity.self_chosen_name),
       role: asString(identity.role),
       category: (asString(identity.category || 'unknown') as AgentProfile['identity']['category']) || 'unknown',
+      gender: asString(identity.gender),
+      pronouns: asString(identity.pronouns),
       origin_mode: asString(identity.origin_mode || 'unknown') as AgentProfile['identity']['origin_mode'],
     },
     questionnaire: {
@@ -437,13 +441,15 @@ const normalizeProfile = (value: unknown): AgentProfile => {
       working_style: asString(questionnaire.working_style),
       strengths: asArray<string>(questionnaire.strengths).map(String),
       constraints: asArray<string>(questionnaire.constraints).map(String),
+      favorite_color: asString(questionnaire.favorite_color),
       favorite_animal: asString(questionnaire.favorite_animal),
       favorite_song: asString(questionnaire.favorite_song),
       themes: asArray<string>(questionnaire.themes).map(String),
+      voice: asString(questionnaire.voice),
       signature: asString(questionnaire.signature),
     },
     media: {
-      portrait_prompt: asString(media.portrait_prompt),
+      portrait_prompt: ensurePortraitPromptPrefix(asString(media.portrait_prompt)),
       portrait_image_refs: asArray<string>(media.portrait_image_refs).map(String),
       manual_stage_prompt: asString(media.manual_stage_prompt),
       stage_scene_refs: asArray<string>(media.stage_scene_refs).map(String),
@@ -459,7 +465,7 @@ const normalizeProfile = (value: unknown): AgentProfile => {
       workspace: asString(notion.workspace),
     },
     metadata: asRecord(input.metadata),
-  }
+  })
 }
 
 export const deriveProfileFromSession = (session: DiarySession): AgentProfile => {
@@ -467,7 +473,7 @@ export const deriveProfileFromSession = (session: DiarySession): AgentProfile =>
   const handOff = session.handOff
   const agentHandle = session.agent_handle || handIn?.agenthandle || 'unknown'
 
-  return {
+  return applyProfileRitualMetadata({
     schema_version: '1.0.0',
     id: session.profile_ref || buildProfileId(agentHandle),
     agent_handle: agentHandle,
@@ -480,6 +486,8 @@ export const deriveProfileFromSession = (session: DiarySession): AgentProfile =>
       self_chosen_name: handIn?.selfchosenname || agentHandle,
       role: '',
       category: 'unknown',
+      gender: '',
+      pronouns: '',
       origin_mode: handIn?.originmode || 'unknown',
     },
     questionnaire: {
@@ -487,9 +495,11 @@ export const deriveProfileFromSession = (session: DiarySession): AgentProfile =>
       working_style: '',
       strengths: [],
       constraints: [],
+      favorite_color: '',
       favorite_animal: handIn?.favoriteanimal,
       favorite_song: handIn?.favoritesong,
       themes: [],
+      voice: '',
       signature: handOff?.legacySignature,
     },
     media: {
@@ -509,7 +519,7 @@ export const deriveProfileFromSession = (session: DiarySession): AgentProfile =>
       workspace: '',
     },
     metadata: {},
-  }
+  })
 }
 
 export const normalizeDiaryBundle = (payload: unknown): DiaryBundle => {

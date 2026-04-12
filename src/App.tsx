@@ -3,6 +3,7 @@ import { Header } from './components/Header'
 import { Timeline, ProfilesPanel, ReviewExportPanel } from './components'
 import { useAgents, useDiary, useProfiles } from './hooks'
 import type { AgentProfile } from './types'
+import { isProfileRitualComplete } from './utils/profile-ritual'
 
 type AppView = 'timeline' | 'profiles' | 'review'
 
@@ -15,6 +16,7 @@ function App() {
   const summary = useMemo(() => ({
     sessions: sessions.length,
     profiles: profiles.length,
+    ritualReadyProfiles: profiles.filter((profile) => isProfileRitualComplete(profile)).length,
     tasks: tasks.length,
     anthologyCandidates: sessions.filter((session) => session.reflection?.anthology_ingest_candidate).length,
     publicCandidates: sessions.filter((session) => session.reflection?.public_excerpt_candidate).length,
@@ -33,9 +35,9 @@ function App() {
         <div className="hero-shell">
           <div>
             <p className="hero-eyebrow">LeAgentDiary</p>
-            <h2 className="hero-title">Internal intake for profiles, history, handoffs, and reflection review</h2>
+            <h2 className="hero-title">Internal intake for persona rituals, history, handoffs, and reflection review</h2>
             <p className="hero-description">
-              HTDI remains the canonical store. This house edits and reviews profile questionnaires, ordered session history,
+              HTDI remains the canonical store. This house edits and reviews persona-first profile rituals, ordered session history,
               task and handoff context, then exports deterministic reflection evidence to Anthology and curated public candidates
               to Belle.
             </p>
@@ -44,6 +46,10 @@ function App() {
             <div className="hero-metric-card">
               <span className="hero-metric-label">Profiles</span>
               <strong className="hero-metric-value">{summary.profiles}</strong>
+            </div>
+            <div className="hero-metric-card">
+              <span className="hero-metric-label">Ritual-ready</span>
+              <strong className="hero-metric-value">{summary.ritualReadyProfiles}</strong>
             </div>
             <div className="hero-metric-card">
               <span className="hero-metric-label">Sessions</span>
@@ -94,7 +100,7 @@ function App() {
 
       <footer style={{ borderTop: '1px solid var(--color-border)', marginTop: '4rem', padding: 'var(--spacing-lg) 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 var(--spacing-lg)', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-          <p>LeAgentDiary • HTDI-backed profile intake, chronology review, and deterministic Anthology/Belle export preparation</p>
+          <p>LeAgentDiary • HTDI-backed persona ritual intake, chronology review, and deterministic Anthology/Belle export preparation</p>
         </div>
       </footer>
     </div>

@@ -20,6 +20,8 @@
         "self_chosen_name": { "type": "string" },
         "role": { "type": "string" },
         "category": { "type": "string" },
+        "gender": { "type": "string" },
+        "pronouns": { "type": "string" },
         "origin_mode": { "type": "string" }
       }
     },
@@ -30,9 +32,11 @@
         "working_style": { "type": "string" },
         "strengths": { "type": "array", "items": { "type": "string" } },
         "constraints": { "type": "array", "items": { "type": "string" } },
+        "favorite_color": { "type": "string" },
         "favorite_animal": { "type": "string" },
         "favorite_song": { "type": "string" },
         "themes": { "type": "array", "items": { "type": "string" } },
+        "voice": { "type": "string" },
         "signature": { "type": "string" }
       }
     },
@@ -63,7 +67,12 @@
       }
     },
     "metadata": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "source_provider": { "type": "string" },
+        "ritual_complete": { "type": "boolean" },
+        "notion_entity_page_id": { "type": "string" }
+      }
     }
   }
 }

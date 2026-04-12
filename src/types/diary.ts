@@ -58,6 +58,8 @@ export interface AgentIdentity {
   self_chosen_name?: string
   role?: string
   category?: AgentCategory
+  gender?: string
+  pronouns?: string
   origin_mode?: OriginMode | 'unknown'
 }
 
@@ -66,9 +68,11 @@ export interface AgentProfileQuestionnaire {
   working_style?: string
   strengths: string[]
   constraints: string[]
+  favorite_color?: string
   favorite_animal?: string
   favorite_song?: string
   themes: string[]
+  voice?: string
   signature?: string
 }
 
@@ -91,6 +95,13 @@ export interface NotionMirrorRefs {
   workspace?: string
 }
 
+export interface AgentProfileMetadata {
+  source_provider?: string
+  ritual_complete?: boolean
+  notion_entity_page_id?: string
+  [key: string]: unknown
+}
+
 export interface AgentProfile {
   schema_version?: string
   id: string
@@ -104,7 +115,7 @@ export interface AgentProfile {
   media: AgentProfileMedia
   visibility: AgentProfileVisibility
   notion?: NotionMirrorRefs
-  metadata: Record<string, unknown>
+  metadata: AgentProfileMetadata
 }
 
 export interface TaskRecord {

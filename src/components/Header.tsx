@@ -6,6 +6,7 @@ interface HeaderProps {
   summary: {
     sessions: number
     profiles: number
+    ritualReadyProfiles: number
     tasks: number
     anthologyCandidates: number
     publicCandidates: number
@@ -38,6 +39,7 @@ export function Header({ activeView, onViewChange, summary }: HeaderProps) {
         <div className="header-actions">
           <div className="header-status-strip">
             <span>{summary.profiles} profiles</span>
+            <span>{summary.ritualReadyProfiles} ritual-ready</span>
             <span>{summary.sessions} sessions</span>
             <span>{summary.tasks} tasks</span>
             <span>{summary.publicCandidates} Belle-ready</span>

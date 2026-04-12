@@ -9,6 +9,25 @@ const EXPORT_ROOT = path.resolve(houseRoot, "exports");
 const SESSION_DIR = path.join(EXPORT_ROOT, "trace.session");
 const REFLECTION_DIR = path.join(EXPORT_ROOT, "trace.reflection");
 const PROFILE_DIR = path.join(EXPORT_ROOT, "agent.profile");
+const PORTRAIT_PROMPT_PREFIX =
+  "Generate the character clearly centered within the frame, standing in a symmetrical T-pose, palms facing forward, fingers fully spread, directly facing the viewer. Use neutral, even lighting and a plain, non-distracting background. Render in a consistent related to input image style with attention to detail in facial features, body, clothing, sane number of fingers unless otherwise expressed on input prompt and if accessories, detaialed them as well. Image rendered in 8k Ultra high quality (UHQ).";
+const PROFILE_RITUAL_FIELDS = [
+  ["identity.display_name", "Display name"],
+  ["identity.self_chosen_name", "Self chosen name"],
+  ["identity.role", "Role"],
+  ["identity.category", "Category"],
+  ["identity.gender", "Gender"],
+  ["identity.pronouns", "Pronouns"],
+  ["questionnaire.bio", "Bio"],
+  ["questionnaire.working_style", "Working style"],
+  ["questionnaire.favorite_color", "Favorite color"],
+  ["questionnaire.favorite_animal", "Favorite animal"],
+  ["questionnaire.favorite_song", "Favorite song"],
+  ["questionnaire.voice", "Voice"],
+  ["questionnaire.signature", "Signature"],
+  ["media.portrait_prompt", "Portrait prompt"],
+  ["media.manual_stage_prompt", "Manual stage prompt"],
+];
 
 const normalizeUrl = (value) => String(value || "").replace(/\/+$/, "");
 const DEFAULT_SOURCE_URL = `${normalizeUrl(
@@ -101,6 +120,40 @@ const asArray = (value) => (Array.isArray(value) ? value : []);
 const asString = (value, fallback = "") => (typeof value === "string" ? value : fallback);
 const unique = (items) => Array.from(new Set(items.filter(Boolean)));
 const buildProfileId = (agentHandle) => `agent:${agentHandle || "unknown"}`;
+const ensurePortraitPromptPrefix = (prompt) => {
+  const trimmed = String(prompt || "").trim();
+
+  if (!trimmed) {
+    return "";
+  }
+
+  if (trimmed.startsWith(PORTRAIT_PROMPT_PREFIX)) {
+    return trimmed;
+  }
+
+  return `${PORTRAIT_PROMPT_PREFIX} ${trimmed}`;
+};
+const hasValue = (value) => {
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  return value !== undefined && value !== null;
+};
+const getFieldValue = (profile, key) =>
+  key.split(".").reduce((current, segment) => {
+    if (!current || typeof current !== "object") {
+      return undefined;
+    }
+
+    return current[segment];
+  }, profile);
+const isProfileRitualComplete = (profile) =>
+  PROFILE_RITUAL_FIELDS.every(([key]) => hasValue(getFieldValue(profile, key)));
 
 const normalizeProfile = (value) => {
   const input = asRecord(value);
@@ -111,7 +164,7 @@ const normalizeProfile = (value) => {
   const notion = asRecord(input.notion);
   const agentHandle = asString(input.agent_handle || identity.agent_handle || "unknown");
 
-  return {
+  const profile = {
     schema_version: asString(input.schema_version || "1.0.0"),
     id: asString(input.id || buildProfileId(agentHandle)),
     agent_handle: agentHandle,
@@ -124,6 +177,8 @@ const normalizeProfile = (value) => {
       self_chosen_name: asString(identity.self_chosen_name),
       role: asString(identity.role),
       category: asString(identity.category || "unknown"),
+      gender: asString(identity.gender),
+      pronouns: asString(identity.pronouns),
       origin_mode: asString(identity.origin_mode || "unknown"),
     },
     questionnaire: {
@@ -131,13 +186,15 @@ const normalizeProfile = (value) => {
       working_style: asString(questionnaire.working_style),
       strengths: asArray(questionnaire.strengths).map(String),
       constraints: asArray(questionnaire.constraints).map(String),
+      favorite_color: asString(questionnaire.favorite_color),
       favorite_animal: asString(questionnaire.favorite_animal),
       favorite_song: asString(questionnaire.favorite_song),
       themes: asArray(questionnaire.themes).map(String),
+      voice: asString(questionnaire.voice),
       signature: asString(questionnaire.signature),
     },
     media: {
-      portrait_prompt: asString(media.portrait_prompt),
+      portrait_prompt: ensurePortraitPromptPrefix(asString(media.portrait_prompt)),
       portrait_image_refs: asArray(media.portrait_image_refs).map(String),
       manual_stage_prompt: asString(media.manual_stage_prompt),
       stage_scene_refs: asArray(media.stage_scene_refs).map(String),
@@ -154,6 +211,13 @@ const normalizeProfile = (value) => {
     },
     metadata: asRecord(input.metadata),
   };
+
+  profile.metadata = {
+    ...profile.metadata,
+    ritual_complete: isProfileRitualComplete(profile),
+  };
+
+  return profile;
 };
 
 const deriveProfileFromSession = (session) => {

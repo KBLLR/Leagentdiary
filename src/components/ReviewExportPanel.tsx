@@ -1,4 +1,5 @@
 import type { AgentProfile, DiarySession, TaskRecord } from '../types'
+import { isProfileRitualComplete } from '../utils/profile-ritual'
 
 interface ReviewExportPanelProps {
   sessions: DiarySession[]
@@ -10,6 +11,8 @@ export function ReviewExportPanel({ sessions, profiles, tasks }: ReviewExportPan
   const anthologyCandidates = sessions.filter((session) => session.reflection?.anthology_ingest_candidate)
   const belleCandidates = sessions.filter((session) => session.reflection?.public_excerpt_candidate)
   const notionProfiles = profiles.filter((profile) => profile.notion?.profile_page_id)
+  const ritualReadyProfiles = profiles.filter((profile) => isProfileRitualComplete(profile))
+  const incompleteProfiles = profiles.filter((profile) => !isProfileRitualComplete(profile))
 
   return (
     <section className="panel-grid">
@@ -38,6 +41,11 @@ export function ReviewExportPanel({ sessions, profiles, tasks }: ReviewExportPan
             <p className="microcopy">House-local profile exports.</p>
           </div>
           <div className="summary-card">
+            <span className="summary-label">Ritual-ready</span>
+            <strong>{ritualReadyProfiles.length}</strong>
+            <p className="microcopy">Profiles ready for mirror and curation workflows.</p>
+          </div>
+          <div className="summary-card">
             <span className="summary-label">Belle-ready</span>
             <strong>{belleCandidates.length}</strong>
             <p className="microcopy">Public excerpt candidates for Le Belle Epoch.</p>
@@ -50,6 +58,11 @@ export function ReviewExportPanel({ sessions, profiles, tasks }: ReviewExportPan
             Raw timeline history does not publish. Belle consumes approved diary-derived `publish.story` entries in the new
             `Le Agent Diary` lane, while Anthology remains the archive/compiler for curated reflections.
           </p>
+          {incompleteProfiles.length > 0 && (
+            <p className="microcopy">
+              {incompleteProfiles.length} profile{incompleteProfiles.length === 1 ? '' : 's'} still load for backward compatibility but remain incomplete until the mandatory persona ritual is filled.
+            </p>
+          )}
         </div>
 
         <div className="card-section">
@@ -84,6 +97,11 @@ export function ReviewExportPanel({ sessions, profiles, tasks }: ReviewExportPan
             <span className="summary-label">Profile pages</span>
             <strong>{notionProfiles.length}</strong>
             <p className="microcopy">Profiles already linked to a Notion page.</p>
+          </div>
+          <div className="summary-card">
+            <span className="summary-label">Ritual-complete</span>
+            <strong>{ritualReadyProfiles.length}</strong>
+            <p className="microcopy">Profiles that should mirror as ready rather than incomplete.</p>
           </div>
           <div className="summary-card">
             <span className="summary-label">Journal candidates</span>

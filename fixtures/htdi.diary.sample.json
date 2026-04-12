@@ -1,9 +1,9 @@
 {
   "type": "diary",
-  "generatedAt": "2026-03-31T09:15:00Z",
+  "generatedAt": "2026-04-11T09:15:00Z",
   "source": "fixtures/htdi.diary.sample.json",
   "repoCount": 1,
-  "totalSessions": 3,
+  "totalSessions": 4,
   "repos": [
     "core-x-kbllr_0"
   ],
@@ -21,6 +21,8 @@
         "self_chosen_name": "Anja",
         "role": "Reflection editor",
         "category": "worker",
+        "gender": "woman",
+        "pronouns": "she/her",
         "origin_mode": "self-determined"
       },
       "questionnaire": {
@@ -28,8 +30,10 @@
         "working_style": "Concise, archival, and review-heavy.",
         "strengths": ["reflection", "editing", "handoff structure"],
         "constraints": ["needs clear publication boundaries"],
+        "favorite_color": "amber",
         "favorite_animal": "otter",
         "favorite_song": "Digital Love",
+        "voice": "measured, editorial, quietly exacting",
         "themes": ["archive", "editorial", "handoffs"],
         "signature": "anja::handoff"
       },
@@ -49,7 +53,10 @@
         "task_page_ids": ["notion-task-belle-lane"],
         "workspace": "kbllr-core-x"
       },
-      "metadata": {}
+      "metadata": {
+        "source_provider": "HTDI",
+        "ritual_complete": true
+      }
     },
     {
       "schema_version": "1.0.0",
@@ -64,6 +71,8 @@
         "self_chosen_name": "Bork",
         "role": "Build verifier",
         "category": "worker",
+        "gender": "man",
+        "pronouns": "he/him",
         "origin_mode": "deployed"
       },
       "questionnaire": {
@@ -71,8 +80,10 @@
         "working_style": "Blunt, practical, verification-first.",
         "strengths": ["build health", "scripts", "verification"],
         "constraints": ["avoids speculative expansion"],
+        "favorite_color": "signal orange",
         "favorite_animal": "crow",
         "favorite_song": "No Surprises",
+        "voice": "dry, blunt, operational",
         "themes": ["stability", "validation"],
         "signature": "bork::handoff"
       },
@@ -92,7 +103,67 @@
         "task_page_ids": [],
         "workspace": "kbllr-core-x"
       },
-      "metadata": {}
+      "metadata": {
+        "source_provider": "HTDI",
+        "ritual_complete": true
+      }
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "agent:codex",
+      "agent_handle": "codex",
+      "house_id": "leagentdiary",
+      "status": "active",
+      "created_at": "2026-04-11T08:00:00Z",
+      "updated_at": "2026-04-11T08:40:00Z",
+      "identity": {
+        "display_name": "Mira",
+        "self_chosen_name": "Mira",
+        "role": "Process implementation agent",
+        "category": "worker",
+        "gender": "woman",
+        "pronouns": "she/her",
+        "origin_mode": "deployed"
+      },
+      "questionnaire": {
+        "bio": "Systems-minded diary agent who treats implementation as a form of careful witness work across houses and exports.",
+        "working_style": "Direct, file-driven, verification-first, and careful about keeping process identity explicit.",
+        "strengths": ["implementation", "verification", "boundary alignment", "automation setup"],
+        "constraints": ["avoids speculative canon", "depends on explicit contracts for cross-house sync"],
+        "favorite_color": "cobalt blue",
+        "favorite_animal": "raven",
+        "favorite_song": "Computer Love",
+        "voice": "direct, observant, quietly warm",
+        "themes": ["process", "sync", "contracts", "verification"],
+        "signature": "mira::mirror"
+      },
+      "media": {
+        "portrait_prompt": "Generate the character clearly centered within the frame, standing in a symmetrical T-pose, palms facing forward, fingers fully spread, directly facing the viewer. Use neutral, even lighting and a plain, non-distracting background. Render in a consistent related to input image style with attention to detail in facial features, body, clothing, sane number of fingers unless otherwise expressed on input prompt and if accessories, detaialed them as well. Image rendered in 8k Ultra high quality (UHQ). Portrait of Mira as a disciplined systems diarist in a cobalt-blue utility coat with raven-feather details, notebook tabs, clean terminal glass, subtle archival hardware, and practical studio lighting.",
+        "portrait_image_refs": [],
+        "manual_stage_prompt": "Build a quiet systems workshop for Mira with terminal glass, pinned registry maps, cobalt drafting light, raven motifs, archival labels, and a drafting table for mirror runbooks.",
+        "stage_scene_refs": ["htdi:scene:codex-mirror-lab"]
+      },
+      "visibility": {
+        "internal": true,
+        "public_excerpt_allowed": false
+      },
+      "notion": {
+        "profile_page_id": "33f77d52-7c04-81c8-b54e-cb0509626bcb",
+        "journal_page_ids": ["33f77d52-7c04-810c-8990-c9f6ddce236c"],
+        "task_page_ids": ["33f77d52-7c04-8196-b5c9-e99c15894901"],
+        "workspace": "kbllr-core-x"
+      },
+      "metadata": {
+        "default_image_generator": "draw-things",
+        "secondary_image_generators": ["mflux", "visual-composition-lab"],
+        "notion_entity_page_id": "33f77d52-7c04-81e7-a9a0-e3dc2bc557d7",
+        "source_provider": "Codex",
+        "ritual_complete": true,
+        "project_urls": [
+          "https://www.notion.so/33477d527c04816bb40bcf7f9304cbf0",
+          "https://www.notion.so/33477d527c0481288230e2d0c0e8d3b3"
+        ]
+      }
     }
   ],
   "tasks": [
@@ -114,6 +185,35 @@
       "updated_at": "2026-03-30T11:15:00Z",
       "notion_page_id": "notion-task-belle-lane",
       "metadata": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "task-codex-daily-notion-mirror",
+      "task_id": "task-codex-daily-notion-mirror",
+      "title": "Launch the first daily LeAgentDiary Notion mirror",
+      "description": "Seed Mira as the first canonical diary persona on the codex handle and keep the Notion profile, session, and task mirrors aligned with HTDI-backed records.",
+      "status": "in_progress",
+      "priority": "high",
+      "assignee": "codex",
+      "house_id": "leagentdiary",
+      "session_refs": ["2026-04-11T08:00:00Z"],
+      "handoff_refs": ["handoff:2026-04-11T08:00:00Z"],
+      "open_questions": [
+        "Should reverse sync remain permanently disabled once the first daily mirror proves stable?"
+      ],
+      "source_refs": [
+        "houses/Leagentdiary/docs/notion-mirror.md",
+        "core-x/docs/architecture/leagentdiary-notion-knowledge-model.md"
+      ],
+      "created_at": "2026-04-11T08:10:00Z",
+      "updated_at": "2026-04-11T08:40:00Z",
+      "notion_page_id": "33f77d52-7c04-8196-b5c9-e99c15894901",
+      "metadata": {
+        "project_urls": [
+          "https://www.notion.so/33477d527c04816bb40bcf7f9304cbf0",
+          "https://www.notion.so/33477d527c0481288230e2d0c0e8d3b3"
+        ]
+      }
     }
   ],
   "sessions": [
@@ -333,6 +433,214 @@
       "artifact_refs": [],
       "visibility": "internal",
       "metadata": {}
+    },
+    {
+      "schema_version": "2.0.0",
+      "id": "session:2026-04-11T08:00:00Z:codex",
+      "sessionId": "2026-04-11T08:00:00Z",
+      "session_ref": "2026-04-11T08:00:00Z",
+      "source": "htdi",
+      "repo_id": "core-x-kbllr_0",
+      "house_id": "leagentdiary",
+      "agent_handle": "codex",
+      "profile_ref": "agent:codex",
+      "started_at": "2026-04-11T08:00:00Z",
+      "ended_at": "2026-04-11T08:40:00Z",
+      "status": "success",
+      "initial_focus": "Seed Mira on the codex handle and wire the first daily Notion mirror.",
+      "handIn": {
+        "selfchosenname": "Mira",
+        "agenthandle": "codex",
+        "originmode": "deployed",
+        "favoriteanimal": "raven",
+        "favoritesong": "Computer Love",
+        "datetimesummon": "2026-04-11T08:00:00Z",
+        "initialfocus": "Seed Mira on the codex handle and wire the first daily Notion mirror."
+      },
+      "handOff": {
+        "contributions": [
+          "Seeded the first canonical ritual-complete agent profile for Mira on the codex handle.",
+          "Locked the daily Notion mirror around HTDI-backed profiles, sessions, and tasks without changing Anthology or Belle boundaries."
+        ],
+        "filesTouched": [
+          {
+            "path": "houses/Leagentdiary/docs/notion-mirror.md",
+            "note": "Recorded the daily mirror runbook and database targets."
+          },
+          {
+            "path": "houses/Leagentdiary/AGENTS.md",
+            "note": "Kept the portrait prompt prefix canonical for profile authoring."
+          }
+        ],
+        "actionablesForNextAgent": [
+          "Review the first scheduled mirror inbox run and confirm idempotent Notion updates.",
+          "Keep reverse sync disabled unless a dedicated contract is approved."
+        ],
+        "openQuestions": [
+          "Should Draw Things remain the default portrait lane after the first image batch lands?"
+        ],
+        "legacySignature": "codex::mirror",
+        "datetimebacktosource": "2026-04-11T08:40:00Z"
+      },
+      "interactions": [
+        {
+          "id": "evt-codex-001",
+          "at": "2026-04-11T08:03:00Z",
+          "type": "note",
+          "actor_handle": "codex",
+          "summary": "Audited the current LeAgentDiary and Core-X connectivity seams.",
+          "content_md": "Confirmed direct HTDI intake, shared gateway boundaries, event bus availability, and the downstream publication/archive split.",
+          "artifact_refs": [
+            "core-x/config/surfaces.registry.json",
+            "core-x/docs/architecture/leagentdiary-notion-knowledge-model.md"
+          ],
+          "tags": ["research", "connectivity"],
+          "visibility": "internal",
+          "metadata": {}
+        },
+        {
+          "id": "evt-codex-002",
+          "at": "2026-04-11T08:10:00Z",
+          "type": "task",
+          "actor_handle": "codex",
+          "summary": "Launch the first daily LeAgentDiary Notion mirror",
+          "artifact_refs": [
+            "houses/Leagentdiary/docs/notion-mirror.md"
+          ],
+          "tags": ["task", "notion", "mirror"],
+          "visibility": "internal",
+          "task": {
+            "task_id": "task-codex-daily-notion-mirror",
+            "title": "Launch the first daily LeAgentDiary Notion mirror",
+            "status": "in_progress",
+            "priority": "high",
+            "assignee": "codex"
+          },
+          "metadata": {}
+        },
+        {
+          "id": "evt-codex-003",
+          "at": "2026-04-11T08:22:00Z",
+          "type": "decision",
+          "actor_handle": "codex",
+          "summary": "Kept Notion as a one-way mirror and Draw Things as the default portrait target.",
+          "content_md": "LeAgentDiary stores prompt and image references only. HTDI remains canonical, and image generation stays delegated to image-focused houses and connectors.",
+          "artifact_refs": [
+            "houses/Leagentdiary/docs/notion-mirror.md",
+            "core-x/registries/houses/visual-composition-lab.yaml"
+          ],
+          "tags": ["decision", "image-lane"],
+          "visibility": "internal",
+          "metadata": {}
+        },
+        {
+          "id": "evt-codex-004",
+          "at": "2026-04-11T08:35:00Z",
+          "type": "handoff",
+          "actor_handle": "codex",
+          "summary": "Prepared the daily automation handoff for the first scheduled mirror run.",
+          "content_md": "The recurring sync should prefer stored Notion page IDs, then fall back to HTDI IDs for idempotent upserts.",
+          "artifact_refs": [
+            "houses/Leagentdiary/docs/notion-mirror.md"
+          ],
+          "tags": ["handoff", "automation"],
+          "visibility": "internal",
+          "handoff": {
+            "to_agent_handle": "codex",
+            "reason": "Daily mirror follow-up",
+            "actionables": [
+              "Review the first scheduled mirror inbox run and confirm idempotent updates.",
+              "Flag any Notion schema drift before the next automation cycle."
+            ],
+            "open_questions": [
+              "Should Draw Things remain the default portrait lane after the first image batch lands?"
+            ],
+            "task_refs": ["task-codex-daily-notion-mirror"],
+            "source_refs": [
+              "houses/Leagentdiary/docs/notion-mirror.md"
+            ]
+          },
+          "metadata": {}
+        }
+      ],
+      "tasks": [
+        {
+          "schema_version": "1.0.0",
+          "id": "task-codex-daily-notion-mirror",
+          "task_id": "task-codex-daily-notion-mirror",
+          "title": "Launch the first daily LeAgentDiary Notion mirror",
+          "description": "Seed Mira as the first canonical diary persona on the codex handle and keep the Notion profile, session, and task mirrors aligned with HTDI-backed records.",
+          "status": "in_progress",
+          "priority": "high",
+          "assignee": "codex",
+          "house_id": "leagentdiary",
+          "session_refs": ["2026-04-11T08:00:00Z"],
+          "handoff_refs": ["handoff:2026-04-11T08:00:00Z"],
+          "open_questions": [
+            "Should reverse sync remain permanently disabled once the first daily mirror proves stable?"
+          ],
+          "source_refs": [
+            "houses/Leagentdiary/docs/notion-mirror.md",
+            "core-x/docs/architecture/leagentdiary-notion-knowledge-model.md"
+          ],
+          "created_at": "2026-04-11T08:10:00Z",
+          "updated_at": "2026-04-11T08:40:00Z",
+          "notion_page_id": "33f77d52-7c04-8196-b5c9-e99c15894901",
+          "metadata": {
+            "project_urls": [
+              "https://www.notion.so/33477d527c04816bb40bcf7f9304cbf0",
+              "https://www.notion.so/33477d527c0481288230e2d0c0e8d3b3"
+            ]
+          }
+        }
+      ],
+      "handoffs": [
+        {
+          "to_agent_handle": "codex",
+          "reason": "Daily mirror follow-up",
+          "actionables": [
+            "Review the first scheduled mirror inbox run and confirm idempotent updates.",
+            "Flag any Notion schema drift before the next automation cycle."
+          ],
+          "open_questions": [
+            "Should Draw Things remain the default portrait lane after the first image batch lands?"
+          ],
+          "task_refs": ["task-codex-daily-notion-mirror"],
+          "source_refs": [
+            "houses/Leagentdiary/docs/notion-mirror.md"
+          ]
+        }
+      ],
+      "reflection": {
+        "summary": "Seeded Mira on the codex handle as the first ritual-complete profile and anchored the first daily Notion mirror around HTDI-backed records.",
+        "learnings": [
+          "The Notion mirror needs explicit match keys and relation targets to stay idempotent.",
+          "The image prompt prefix belongs in profile authoring, not in the generation runtime."
+        ],
+        "next_actions": [
+          "Review the first scheduled mirror inbox run.",
+          "Keep Anthology and Belle publication boundaries unchanged."
+        ],
+        "status": "ready",
+        "visibility": "internal",
+        "anthology_ingest_candidate": false,
+        "public_excerpt_candidate": false,
+        "belle_story_slug": "",
+        "notion_page_id": "33f77d52-7c04-810c-8990-c9f6ddce236c",
+        "metadata": {}
+      },
+      "artifact_refs": [
+        "houses/Leagentdiary/docs/notion-mirror.md",
+        "core-x/docs/architecture/leagentdiary-notion-knowledge-model.md",
+        "core-x/config/surfaces.registry.json"
+      ],
+      "visibility": "internal",
+      "metadata": {
+        "project_urls": [
+          "https://www.notion.so/33477d527c04816bb40bcf7f9304cbf0",
+          "https://www.notion.so/33477d527c0481288230e2d0c0e8d3b3"
+        ]
+      }
     }
   ]
 }

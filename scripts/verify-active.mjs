@@ -8,6 +8,8 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const houseRoot = path.resolve(scriptDir, "..");
 const exportRoot = path.join(houseRoot, "exports");
 const fixtureArgs = ["run", "export:traces", "--", "--source-file", "fixtures/htdi.diary.sample.json"];
+const portraitPromptPrefix =
+  "Generate the character clearly centered within the frame, standing in a symmetrical T-pose, palms facing forward, fingers fully spread, directly facing the viewer.";
 
 const run = (command, args) =>
   new Promise((resolve, reject) => {
@@ -68,6 +70,28 @@ const main = async () => {
   await run("npm", fixtureArgs);
 
   const firstSnapshot = await snapshotExports();
+  const codexProfilePath = path.join(exportRoot, "agent.profile", "codex.json");
+  const codexProfile = JSON.parse(await fs.readFile(codexProfilePath, "utf-8"));
+
+  if (codexProfile.id !== "agent:codex") {
+    throw new Error("Codex profile export is missing or has the wrong id.");
+  }
+
+  if (codexProfile.identity?.display_name !== "Mira") {
+    throw new Error("Codex profile export is missing the Mira display name.");
+  }
+
+  if (codexProfile.metadata?.source_provider !== "Codex") {
+    throw new Error("Codex profile export is missing the source provider metadata.");
+  }
+
+  if (codexProfile.metadata?.ritual_complete !== true) {
+    throw new Error("Codex profile export is not marked ritual-complete.");
+  }
+
+  if (!String(codexProfile.media?.portrait_prompt || "").startsWith(portraitPromptPrefix)) {
+    throw new Error("Codex portrait prompt is missing the canonical prefix.");
+  }
 
   await run("npm", fixtureArgs);
 
