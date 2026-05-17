@@ -3,7 +3,7 @@
   "generatedAt": "2026-04-11T09:15:00Z",
   "source": "fixtures/htdi.diary.sample.json",
   "repoCount": 1,
-  "totalSessions": 4,
+  "totalSessions": 3,
   "repos": [
     "core-x-kbllr_0"
   ],
@@ -217,16 +217,6 @@
     }
   ],
   "sessions": [
-    {
-      "sessionId": "<ISO_TIMESTAMP>",
-      "handIn": null,
-      "handOff": null,
-      "interactions": [],
-      "tasks": [],
-      "handoffs": [],
-      "artifact_refs": [],
-      "metadata": {}
-    },
     {
       "schema_version": "2.0.0",
       "id": "session:2026-03-30T10:15:00Z:anja",

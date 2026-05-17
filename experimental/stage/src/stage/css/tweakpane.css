@@ -1,0 +1,72 @@
+:root {
+    /* Tweak_Pane_theme_translucent  **********************************/
+    --tp-base-background-color: hsla(0, 0%, 10%, 0.8);
+    --tp-base-shadow-color: hsla(0, 0%, 0%, 0.2);
+    --tp-button-background-color: hsla(0, 0%, 80%, 1);
+    --tp-button-background-color-active: hsla(0, 0%, 100%, 1);
+    --tp-button-background-color-focus: hsla(0, 0%, 95%, 1);
+    --tp-button-background-color-hover: hsla(0, 0%, 85%, 1);
+    --tp-button-foreground-color: hsla(0, 0%, 0%, 0.8);
+    --tp-container-background-color: hsla(0, 0%, 0%, 0.3);
+    --tp-container-background-color-active: hsla(0, 0%, 0%, 0.6);
+    --tp-container-background-color-focus: hsla(0, 0%, 0%, 0.5);
+    --tp-container-background-color-hover: hsla(0, 0%, 0%, 0.4);
+    --tp-container-foreground-color: hsla(0, 0%, 100%, 0.5);
+    --tp-groove-foreground-color: hsla(0, 0%, 0%, 0.2);
+    --tp-input-background-color: hsla(0, 0%, 0%, 0.3);
+    --tp-input-background-color-active: hsla(0, 0%, 0%, 0.6);
+    --tp-input-background-color-focus: hsla(0, 0%, 0%, 0.5);
+    --tp-input-background-color-hover: hsla(0, 0%, 0%, 0.4);
+    --tp-input-foreground-color: hsla(0, 0%, 100%, 0.5);
+    --tp-label-foreground-color: hsla(0, 0%, 100%, 0.5);
+    --tp-monitor-background-color: hsla(0, 0%, 0%, 0.3);
+    --tp-monitor-foreground-color: hsla(0, 0%, 100%, 0.3);
+    --tp-base-font-size: 13px;
+}
+
+/* Tweakpane container */
+.tp-dfwv {
+    position: fixed !important;
+    transform: none !important;
+    width: min(360px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 32px) !important;
+    z-index: 20000 !important;
+    transition: opacity 0.25s ease !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+.tp-dfwv.is-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+
+.tp-dfwv.is-hidden .tp-rotv {
+    pointer-events: none !important;
+}
+
+/* Root pane element */
+.tp-dfwv .tp-rotv {
+    max-height: calc(100vh - 16px) !important;
+    overflow-y: auto !important;
+    border-radius: 12px !important;
+    padding-right: 4px !important;
+    flex: 1 1 auto !important;
+}
+
+/* When folded, keep it minimal */
+.tp-dfwv:not(.expanded) .tp-rotv {
+    max-height: 48px !important;
+    overflow: hidden !important;
+}
+
+:root {
+    --tp-base-background-color: rgba(14, 14, 18, 0.72);
+    --tp-base-shadow-color: rgba(0, 0, 0, 0.35);
+    --tp-blade-background-color: rgba(22, 22, 28, 0.85);
+    --tp-label-foreground-color: #c9d1d9;
+    --tp-input-foreground-color: #e5e7eb;
+}
