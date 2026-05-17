@@ -10,6 +10,90 @@
   "profiles": [
     {
       "schema_version": "1.0.0",
+      "id": "agent:codex",
+      "agent_handle": "codex",
+      "house_id": "leagentdiary",
+      "status": "active",
+      "created_at": "2026-04-11T08:00:00Z",
+      "updated_at": "2026-04-11T08:40:00Z",
+      "identity": {
+        "display_name": "Mira",
+        "self_chosen_name": "Mira",
+        "role": "Process implementation agent",
+        "category": "worker",
+        "gender": "woman",
+        "pronouns": "she/her",
+        "origin_mode": "deployed"
+      },
+      "questionnaire": {
+        "bio": "Systems-minded diary agent who treats implementation as a form of careful witness work across houses and exports.",
+        "working_style": "Direct, file-driven, verification-first, and careful about keeping process identity explicit.",
+        "strengths": [
+          "implementation",
+          "verification",
+          "boundary alignment",
+          "automation setup"
+        ],
+        "constraints": [
+          "avoids speculative canon",
+          "depends on explicit contracts for cross-house sync"
+        ],
+        "favorite_color": "cobalt blue",
+        "favorite_animal": "raven",
+        "favorite_song": "Computer Love",
+        "voice": "direct, observant, quietly warm",
+        "themes": [
+          "process",
+          "sync",
+          "contracts",
+          "verification"
+        ],
+        "signature": "mira::mirror"
+      },
+      "media": {
+        "portrait_prompt": "Generate the character clearly centered within the frame, standing in a symmetrical T-pose, palms facing forward, fingers fully spread, directly facing the viewer. Use neutral, even lighting and a plain, non-distracting background. Render in a consistent related to input image style with attention to detail in facial features, body, clothing, sane number of fingers unless otherwise expressed on input prompt and if accessories, detaialed them as well. Image rendered in 8k Ultra high quality (UHQ). Portrait of Mira as a disciplined systems diarist in a cobalt-blue utility coat with raven-feather details, notebook tabs, clean terminal glass, subtle archival hardware, and practical studio lighting.",
+        "portrait_image_refs": [],
+        "manual_stage_prompt": "Build a quiet systems workshop for Mira with terminal glass, pinned registry maps, cobalt drafting light, raven motifs, archival labels, and a drafting table for mirror runbooks.",
+        "stage_scene_refs": [
+          "htdi:scene:codex-mirror-lab"
+        ]
+      },
+      "visibility": {
+        "internal": true,
+        "public_excerpt_allowed": false
+      },
+      "notion": {
+        "profile_page_id": "33f77d52-7c04-81c8-b54e-cb0509626bcb",
+        "journal_page_ids": [
+          "33f77d52-7c04-810c-8990-c9f6ddce236c"
+        ],
+        "task_page_ids": [
+          "33f77d52-7c04-8196-b5c9-e99c15894901"
+        ],
+        "workspace": "kbllr-core-x"
+      },
+      "metadata": {
+        "default_image_generator": "draw-things",
+        "secondary_image_generators": [
+          "mflux",
+          "visual-composition-lab"
+        ],
+        "notion_entity_page_id": "33f77d52-7c04-81e7-a9a0-e3dc2bc557d7",
+        "source_provider": "Codex",
+        "ritual_complete": true,
+        "project_urls": [
+          "https://www.notion.so/33477d527c04816bb40bcf7f9304cbf0",
+          "https://www.notion.so/33477d527c0481288230e2d0c0e8d3b3"
+        ],
+        "portrait_generation_target": "Draw Things",
+        "portrait_generation_secondary": [
+          "mflux",
+          "Visual Composition Lab"
+        ]
+      }
+    },
+    {
+      "schema_version": "1.0.0",
       "id": "agent:anja",
       "agent_handle": "anja",
       "house_id": "leagentdiary",
@@ -28,20 +112,34 @@
       "questionnaire": {
         "bio": "Reflection-oriented editor focused on chronology, export seams, and public-safe handoff narratives.",
         "working_style": "Concise, archival, and review-heavy.",
-        "strengths": ["reflection", "editing", "handoff structure"],
-        "constraints": ["needs clear publication boundaries"],
+        "strengths": [
+          "reflection",
+          "editing",
+          "handoff structure"
+        ],
+        "constraints": [
+          "needs clear publication boundaries"
+        ],
         "favorite_color": "amber",
         "favorite_animal": "otter",
         "favorite_song": "Digital Love",
         "voice": "measured, editorial, quietly exacting",
-        "themes": ["archive", "editorial", "handoffs"],
+        "themes": [
+          "archive",
+          "editorial",
+          "handoffs"
+        ],
         "signature": "anja::handoff"
       },
       "media": {
         "portrait_prompt": "Portrait of Anja as a reflective editorial agent surrounded by archival note cards and brass index drawers.",
-        "portrait_image_refs": ["media/agents/anja/portrait-01.png"],
+        "portrait_image_refs": [
+          "media/agents/anja/portrait-01.png"
+        ],
         "manual_stage_prompt": "Build a quiet editorial study with index drawers, warm desk lamps, and open paper traces.",
-        "stage_scene_refs": ["htdi:scene:anja-study"]
+        "stage_scene_refs": [
+          "htdi:scene:anja-study"
+        ]
       },
       "visibility": {
         "internal": true,
@@ -49,8 +147,12 @@
       },
       "notion": {
         "profile_page_id": "notion-profile-anja",
-        "journal_page_ids": ["notion-journal-anja-2026-03-30"],
-        "task_page_ids": ["notion-task-belle-lane"],
+        "journal_page_ids": [
+          "notion-journal-anja-2026-03-30"
+        ],
+        "task_page_ids": [
+          "notion-task-belle-lane"
+        ],
         "workspace": "kbllr-core-x"
       },
       "metadata": {
@@ -78,13 +180,22 @@
       "questionnaire": {
         "bio": "Verification-focused builder who checks the current lane without widening product scope.",
         "working_style": "Blunt, practical, verification-first.",
-        "strengths": ["build health", "scripts", "verification"],
-        "constraints": ["avoids speculative expansion"],
+        "strengths": [
+          "build health",
+          "scripts",
+          "verification"
+        ],
+        "constraints": [
+          "avoids speculative expansion"
+        ],
         "favorite_color": "signal orange",
         "favorite_animal": "crow",
         "favorite_song": "No Surprises",
         "voice": "dry, blunt, operational",
-        "themes": ["stability", "validation"],
+        "themes": [
+          "stability",
+          "validation"
+        ],
         "signature": "bork::handoff"
       },
       "media": {
@@ -107,63 +218,6 @@
         "source_provider": "HTDI",
         "ritual_complete": true
       }
-    },
-    {
-      "schema_version": "1.0.0",
-      "id": "agent:codex",
-      "agent_handle": "codex",
-      "house_id": "leagentdiary",
-      "status": "active",
-      "created_at": "2026-04-11T08:00:00Z",
-      "updated_at": "2026-04-11T08:40:00Z",
-      "identity": {
-        "display_name": "Mira",
-        "self_chosen_name": "Mira",
-        "role": "Process implementation agent",
-        "category": "worker",
-        "gender": "woman",
-        "pronouns": "she/her",
-        "origin_mode": "deployed"
-      },
-      "questionnaire": {
-        "bio": "Systems-minded diary agent who treats implementation as a form of careful witness work across houses and exports.",
-        "working_style": "Direct, file-driven, verification-first, and careful about keeping process identity explicit.",
-        "strengths": ["implementation", "verification", "boundary alignment", "automation setup"],
-        "constraints": ["avoids speculative canon", "depends on explicit contracts for cross-house sync"],
-        "favorite_color": "cobalt blue",
-        "favorite_animal": "raven",
-        "favorite_song": "Computer Love",
-        "voice": "direct, observant, quietly warm",
-        "themes": ["process", "sync", "contracts", "verification"],
-        "signature": "mira::mirror"
-      },
-      "media": {
-        "portrait_prompt": "Generate the character clearly centered within the frame, standing in a symmetrical T-pose, palms facing forward, fingers fully spread, directly facing the viewer. Use neutral, even lighting and a plain, non-distracting background. Render in a consistent related to input image style with attention to detail in facial features, body, clothing, sane number of fingers unless otherwise expressed on input prompt and if accessories, detaialed them as well. Image rendered in 8k Ultra high quality (UHQ). Portrait of Mira as a disciplined systems diarist in a cobalt-blue utility coat with raven-feather details, notebook tabs, clean terminal glass, subtle archival hardware, and practical studio lighting.",
-        "portrait_image_refs": [],
-        "manual_stage_prompt": "Build a quiet systems workshop for Mira with terminal glass, pinned registry maps, cobalt drafting light, raven motifs, archival labels, and a drafting table for mirror runbooks.",
-        "stage_scene_refs": ["htdi:scene:codex-mirror-lab"]
-      },
-      "visibility": {
-        "internal": true,
-        "public_excerpt_allowed": false
-      },
-      "notion": {
-        "profile_page_id": "33f77d52-7c04-81c8-b54e-cb0509626bcb",
-        "journal_page_ids": ["33f77d52-7c04-810c-8990-c9f6ddce236c"],
-        "task_page_ids": ["33f77d52-7c04-8196-b5c9-e99c15894901"],
-        "workspace": "kbllr-core-x"
-      },
-      "metadata": {
-        "default_image_generator": "draw-things",
-        "secondary_image_generators": ["mflux", "visual-composition-lab"],
-        "notion_entity_page_id": "33f77d52-7c04-81e7-a9a0-e3dc2bc557d7",
-        "source_provider": "Codex",
-        "ritual_complete": true,
-        "project_urls": [
-          "https://www.notion.so/33477d527c04816bb40bcf7f9304cbf0",
-          "https://www.notion.so/33477d527c0481288230e2d0c0e8d3b3"
-        ]
-      }
     }
   ],
   "tasks": [
@@ -177,10 +231,18 @@
       "priority": "medium",
       "assignee": "anja",
       "house_id": "leagentdiary",
-      "session_refs": ["2026-03-30T10:15:00Z"],
-      "handoff_refs": ["handoff:2026-03-30T10:15:00Z"],
-      "open_questions": ["Should profiles be public by default?"],
-      "source_refs": ["houses/le-belle-epoch/README.md"],
+      "session_refs": [
+        "2026-03-30T10:15:00Z"
+      ],
+      "handoff_refs": [
+        "handoff:2026-03-30T10:15:00Z"
+      ],
+      "open_questions": [
+        "Should profiles be public by default?"
+      ],
+      "source_refs": [
+        "houses/le-belle-epoch/README.md"
+      ],
       "created_at": "2026-03-30T10:45:00Z",
       "updated_at": "2026-03-30T11:15:00Z",
       "notion_page_id": "notion-task-belle-lane",
@@ -196,8 +258,12 @@
       "priority": "high",
       "assignee": "codex",
       "house_id": "leagentdiary",
-      "session_refs": ["2026-04-11T08:00:00Z"],
-      "handoff_refs": ["handoff:2026-04-11T08:00:00Z"],
+      "session_refs": [
+        "2026-04-11T08:00:00Z"
+      ],
+      "handoff_refs": [
+        "handoff:2026-04-11T08:00:00Z"
+      ],
       "open_questions": [
         "Should reverse sync remain permanently disabled once the first daily mirror proves stable?"
       ],
@@ -273,8 +339,13 @@
           "actor_handle": "anja",
           "summary": "Reviewed Belle publication lanes.",
           "content_md": "Confirmed MLX News, Development Stories, Explainers, and Prompt Sanctuary are already curated editorial lanes.",
-          "artifact_refs": ["houses/le-belle-epoch/README.md"],
-          "tags": ["research", "belle"],
+          "artifact_refs": [
+            "houses/le-belle-epoch/README.md"
+          ],
+          "tags": [
+            "research",
+            "belle"
+          ],
           "visibility": "internal",
           "metadata": {}
         },
@@ -284,8 +355,13 @@
           "type": "task",
           "actor_handle": "anja",
           "summary": "Define the Le Agent Diary public lane",
-          "artifact_refs": ["houses/le-belle-epoch/README.md"],
-          "tags": ["task", "belle"],
+          "artifact_refs": [
+            "houses/le-belle-epoch/README.md"
+          ],
+          "tags": [
+            "task",
+            "belle"
+          ],
           "visibility": "internal",
           "task": {
             "task_id": "task-belle-lane",
@@ -303,16 +379,29 @@
           "actor_handle": "anja",
           "summary": "Prepared a Belle implementation handoff.",
           "content_md": "Next pass should add the lane, keep publication curated, and avoid exposing raw timeline data.",
-          "artifact_refs": ["houses/le-belle-epoch/README.md"],
-          "tags": ["handoff"],
+          "artifact_refs": [
+            "houses/le-belle-epoch/README.md"
+          ],
+          "tags": [
+            "handoff"
+          ],
           "visibility": "internal",
           "handoff": {
             "to_agent_handle": "bork",
             "reason": "Belle implementation pass",
-            "actionables": ["Add lane config", "Hook the new route into the publication shell"],
-            "open_questions": ["Should profiles be public by default?"],
-            "task_refs": ["task-belle-lane"],
-            "source_refs": ["houses/le-belle-epoch/README.md"]
+            "actionables": [
+              "Add lane config",
+              "Hook the new route into the publication shell"
+            ],
+            "open_questions": [
+              "Should profiles be public by default?"
+            ],
+            "task_refs": [
+              "task-belle-lane"
+            ],
+            "source_refs": [
+              "houses/le-belle-epoch/README.md"
+            ]
           },
           "metadata": {}
         }
@@ -328,10 +417,18 @@
           "priority": "medium",
           "assignee": "anja",
           "house_id": "leagentdiary",
-          "session_refs": ["2026-03-30T10:15:00Z"],
-          "handoff_refs": ["handoff:2026-03-30T10:15:00Z"],
-          "open_questions": ["Should profiles be public by default?"],
-          "source_refs": ["houses/le-belle-epoch/README.md"],
+          "session_refs": [
+            "2026-03-30T10:15:00Z"
+          ],
+          "handoff_refs": [
+            "handoff:2026-03-30T10:15:00Z"
+          ],
+          "open_questions": [
+            "Should profiles be public by default?"
+          ],
+          "source_refs": [
+            "houses/le-belle-epoch/README.md"
+          ],
           "created_at": "2026-03-30T10:45:00Z",
           "updated_at": "2026-03-30T11:15:00Z",
           "notion_page_id": "notion-task-belle-lane",
@@ -342,10 +439,19 @@
         {
           "to_agent_handle": "bork",
           "reason": "Belle implementation pass",
-          "actionables": ["Add lane config", "Hook the new route into the publication shell"],
-          "open_questions": ["Should profiles be public by default?"],
-          "task_refs": ["task-belle-lane"],
-          "source_refs": ["houses/le-belle-epoch/README.md"]
+          "actionables": [
+            "Add lane config",
+            "Hook the new route into the publication shell"
+          ],
+          "open_questions": [
+            "Should profiles be public by default?"
+          ],
+          "task_refs": [
+            "task-belle-lane"
+          ],
+          "source_refs": [
+            "houses/le-belle-epoch/README.md"
+          ]
         }
       ],
       "reflection": {
@@ -413,7 +519,9 @@
           "summary": "Ran build and lint checks for the active lane.",
           "content_md": "Verified the review/export runtime without reopening the stage surface.",
           "artifact_refs": [],
-          "tags": ["verification"],
+          "tags": [
+            "verification"
+          ],
           "visibility": "internal",
           "metadata": {}
         }
@@ -484,7 +592,10 @@
             "core-x/config/surfaces.registry.json",
             "core-x/docs/architecture/leagentdiary-notion-knowledge-model.md"
           ],
-          "tags": ["research", "connectivity"],
+          "tags": [
+            "research",
+            "connectivity"
+          ],
           "visibility": "internal",
           "metadata": {}
         },
@@ -497,7 +608,11 @@
           "artifact_refs": [
             "houses/Leagentdiary/docs/notion-mirror.md"
           ],
-          "tags": ["task", "notion", "mirror"],
+          "tags": [
+            "task",
+            "notion",
+            "mirror"
+          ],
           "visibility": "internal",
           "task": {
             "task_id": "task-codex-daily-notion-mirror",
@@ -519,7 +634,10 @@
             "houses/Leagentdiary/docs/notion-mirror.md",
             "core-x/registries/houses/visual-composition-lab.yaml"
           ],
-          "tags": ["decision", "image-lane"],
+          "tags": [
+            "decision",
+            "image-lane"
+          ],
           "visibility": "internal",
           "metadata": {}
         },
@@ -533,7 +651,10 @@
           "artifact_refs": [
             "houses/Leagentdiary/docs/notion-mirror.md"
           ],
-          "tags": ["handoff", "automation"],
+          "tags": [
+            "handoff",
+            "automation"
+          ],
           "visibility": "internal",
           "handoff": {
             "to_agent_handle": "codex",
@@ -545,7 +666,9 @@
             "open_questions": [
               "Should Draw Things remain the default portrait lane after the first image batch lands?"
             ],
-            "task_refs": ["task-codex-daily-notion-mirror"],
+            "task_refs": [
+              "task-codex-daily-notion-mirror"
+            ],
             "source_refs": [
               "houses/Leagentdiary/docs/notion-mirror.md"
             ]
@@ -564,8 +687,12 @@
           "priority": "high",
           "assignee": "codex",
           "house_id": "leagentdiary",
-          "session_refs": ["2026-04-11T08:00:00Z"],
-          "handoff_refs": ["handoff:2026-04-11T08:00:00Z"],
+          "session_refs": [
+            "2026-04-11T08:00:00Z"
+          ],
+          "handoff_refs": [
+            "handoff:2026-04-11T08:00:00Z"
+          ],
           "open_questions": [
             "Should reverse sync remain permanently disabled once the first daily mirror proves stable?"
           ],
@@ -595,7 +722,9 @@
           "open_questions": [
             "Should Draw Things remain the default portrait lane after the first image batch lands?"
           ],
-          "task_refs": ["task-codex-daily-notion-mirror"],
+          "task_refs": [
+            "task-codex-daily-notion-mirror"
+          ],
           "source_refs": [
             "houses/Leagentdiary/docs/notion-mirror.md"
           ]
