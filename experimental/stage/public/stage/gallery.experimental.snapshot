@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Gallery - Legendary Profiles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+        body {
+            background: radial-gradient(circle at top, #0f172a, #020617 70%);
+            min-height: 100vh;
+        }
+        .agent-card {
+            background: linear-gradient(145deg, rgba(25, 39, 68, 0.95), rgba(13, 20, 39, 0.95));
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .agent-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(15, 23, 42, 0.6);
+        }
+        model-viewer {
+            width: 100%;
+            height: 260px;
+            border-radius: 12px;
+            background: linear-gradient(to bottom, #0f172a, #1f2937);
+        }
+    </style>
+</head>
+<body class="text-white">
+    <a href="/" class="fixed top-6 left-6 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full shadow-lg flex items-center gap-2 transition">
+        <i class="fas fa-arrow-left"></i>
+        Back to Diary
+    </a>
+
+    <main class="max-w-7xl mx-auto py-20 px-6">
+        <header class="text-center mb-14">
+            <h1 class="text-5xl font-extrabold mb-4 tracking-tight">
+                <i class="fas fa-users-gear text-blue-400"></i>
+                Agent Gallery
+            </h1>
+            <p class="text-lg text-gray-300">Meet the agents building the future.</p>
+            <p class="text-sm text-gray-400 mt-2">Click an agent to open their full dossier with prompts, stats, and 3D models.</p>
+        </header>
+
+        <section id="agent-grid" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"></section>
+
+        <div id="no-agents" class="hidden text-center text-gray-400 mt-16">
+            <i class="fas fa-robot text-6xl mb-4 opacity-50"></i>
+            <p class="text-xl">No agents have completed their profiles yet.</p>
+        </div>
+    </main>
+
+    <script type="module">
+        async function fetchFileList() {
+            const response = await fetch('/profiles/');
+            if (!response.ok) throw new Error('Directory listing not available');
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            return Array.from(doc.querySelectorAll('a'))
+                .map(a => a.getAttribute('href'))
+                .filter(href => href && href.endsWith('.json') && !href.includes('TEMPLATE'));
+        }
+
+        async function loadProfiles(fileNames) {
+            const profiles = [];
+            for (const name of fileNames) {
+                try {
+                    const res = await fetch(`/profiles/${name}`);
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    data.__filename = name;
+                    profiles.push(data);
+                } catch (err) {
+                    console.warn('Failed to load profile', name, err);
+                }
+            }
+            return profiles;
+        }
+
+        function renderGallery(profiles) {
+            const grid = document.getElementById('agent-grid');
+            const emptyState = document.getElementById('no-agents');
+
+            if (!profiles.length) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            profiles.forEach(profile => {
+                const card = document.createElement('article');
+                card.className = 'agent-card rounded-2xl p-6 shadow-2xl transition-all';
+                card.style.borderColor = profile.favoriteColor || '#64748b';
+
+                const modelPath = profile.model3D
+                    ? `/profiles/models/${profile.model3D}`
+                    : null;
+
+                const viewer = modelPath
+                    ? `
+                    <model-viewer
+                        src="${modelPath}"
+                        alt="${profile.name} model"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        environment-image="neutral"
+                        exposure="1"
+                        camera-orbit="0deg 80deg 2m"
+                    >
+                        <div slot="poster" class="flex items-center justify-center h-full text-gray-400">
+                            <div class="text-center">
+                                <i class="fas fa-cube text-4xl mb-2"></i>
+                                <p class="text-sm">Loading 3D Model...</p>
+                            </div>
+                        </div>
+                    </model-viewer>`
+                    : `
+                    <div class="h-60 rounded-xl bg-slate-800 flex flex-col items-center justify-center gap-2 text-gray-400 border border-dashed border-slate-600">
+                        <i class="fas fa-user-astronaut text-5xl"></i>
+                        <p class="text-sm">3D model pending</p>
+                        <p class="text-xs">Use Tencent prompt to create one.</p>
+                    </div>`;
+
+                card.innerHTML = `
+                    ${viewer}
+                    <div class="mt-5 text-center">
+                        <h2 class="text-2xl font-bold">${profile.name}</h2>
+                        <p class="text-sm text-gray-400 flex items-center justify-center gap-2 mt-1">
+                            <i class="fas fa-robot"></i> ${profile.provider}
+                        </p>
+                    </div>
+                    <div class="flex justify-center gap-3 mt-4 text-sm flex-wrap">
+                        <span class="px-3 py-1 rounded-full border border-slate-600 text-gray-300" style="color:${profile.favoriteColor || '#fff'}">
+                            <i class="fas fa-palette mr-1"></i>${profile.favoriteColor || 'n/a'}
+                        </span>
+                        <span class="px-3 py-1 rounded-full border border-slate-600 text-gray-300">
+                            <i class="fas fa-paw mr-1"></i>${profile.favoriteAnimal || 'n/a'}
+                        </span>
+                    </div>
+                    <blockquote class="mt-4 text-gray-300 italic border-l-4 pl-4" style="border-color:${profile.favoriteColor || '#fff'}">
+                        ${profile.quote || '“Awaiting mission debrief.”'}
+                    </blockquote>
+                    <div class="mt-4 bg-slate-900/60 rounded-xl p-4 text-sm text-gray-300">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-gray-500">Task Completed</p>
+                                <p class="text-base text-white">${profile.taskCompleted || 'Mission Pending'}</p>
+                                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                    <i class="fas fa-calendar"></i>${profile.completedDate || 'YYYY-MM-DD'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <a
+                        href="/stage/dossier.html?profile=${encodeURIComponent(profile.__filename || '')}"
+                            class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition text-sm font-semibold"
+                        >
+                            <i class="fas fa-id-card"></i>
+                            View Agent Dossier
+                        </a>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        async function initGallery() {
+            try {
+                const files = await fetchFileList();
+                const fallback = ['mlx-local.json', 'vault-keeper.json', 'codex-navigator.json'];
+                const profiles = await loadProfiles(files.length ? files : fallback);
+                renderGallery(profiles);
+            } catch (err) {
+                console.error('Gallery error', err);
+                const fallback = ['mlx-local.json', 'vault-keeper.json', 'codex-navigator.json'];
+                const profiles = await loadProfiles(fallback);
+                renderGallery(profiles);
+            }
+        }
+
+        initGallery();
+    </script>
+</body>
+</html>

@@ -3,6 +3,7 @@
   "name": "LeAgentDiary",
   "version": "1.0.0",
   "status": "development",
+  "tier": "lab",
   "purpose": {
     "domain": "dev-tools",
     "mission": "Capture agent session chronology and curated reflections as an internal process journal, then hand high-signal exports to Anthology.",

@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "modules": [
+
+    {
+      "id": "tasks",
+      "title": "Tasks",
+      "buttonId": "tasks-btn",
+      "params": {
+        "defaultAssignee": { "type": "string", "value": "" }
+      }
+    },
+    {
+      "id": "deployments",
+      "title": "Deployments",
+      "buttonId": "deployments-btn",
+      "params": {
+        "provider": { "type": "enum", "options": ["vercel", "netlify", "cloudflare"], "value": "vercel" }
+      }
+    },
+    {
+      "id": "music",
+      "title": "Music",
+      "buttonId": "sound-btn",
+      "params": {
+        "autoplay": { "type": "boolean", "value": false },
+        "volume": { "type": "number", "min": 0, "max": 1, "step": 0.01, "value": 0.5 }
+      }
+    },
+    {
+      "id": "sceneGenerator",
+      "title": "Scene Generator",
+      "buttonId": "scene-picker-btn",
+      "params": {
+        "seed": { "type": "number", "min": 0, "max": 1e9, "step": 1, "value": 42 }
+      }
+    },
+    {
+      "id": "ai",
+      "title": "AI",
+      "buttonId": "ai-btn",
+      "params": {
+        "model": { "type": "enum", "options": ["/Users/davidcaballero/core-x-kbllr_0/model-zoo/models/text/gpt-oss-20b-mxfp4-q8", "/Users/davidcaballero/core-x-kbllr_0/model-zoo/models/text/qwen2.5-7b-instr", "/Users/davidcaballero/core-x-kbllr_0/model-zoo/models/text/llama-3.2-3b-4bit"], "value": "/Users/davidcaballero/core-x-kbllr_0/model-zoo/models/text/gpt-oss-20b-mxfp4-q8" }
+      }
+    },
+    {
+      "id": "data",
+      "title": "Data",
+      "buttonId": "data-btn",
+      "params": {
+        "source": { "type": "enum", "options": ["local", "github", "s3"], "value": "local" }
+      }
+    }
+  ]
+}

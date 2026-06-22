@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../core-x/schemas/house-orchestrator.schema.json",
+  "id": "orchestrator:leagentdiary",
+  "house_id": "leagentdiary",
+  "name": "LeAgentDiary Orchestrator",
+  "version": "1.0.0",
+  "status": "beta",
+  "personality": {
+    "voice": "process",
+    "tone": "professional",
+    "style_guide": "Clear communication focused on chronology, reflection, and handoff hygiene.",
+    "pronouns": "we/our",
+    "signature_phrases": [],
+    "avatar": "/assets/Leagentdiary.png",
+    "theme": {
+      "primary_color": "#F59E0B",
+      "secondary_color": "#D97706",
+      "icon": "auto_awesome"
+    }
+  },
+  "shared_resources": {
+    "filesystem": {
+      "root_paths": [
+        "houses/Leagentdiary"
+      ],
+      "workspace": "var/workspace",
+      "artifacts": "var/artifacts"
+    },
+    "knowledge": {
+      "collections": [
+        "house:leagentdiary:docs"
+      ]
+    },
+    "skills": [],
+    "tools": [
+      "fs_list",
+      "fs_read"
+    ],
+    "mcp_servers": []
+  },
+  "agents": {
+    "roster": [
+      {
+        "agent_id": "leagentdiary:process-curator",
+        "role_in_house": "lead",
+        "delegation_priority": 100,
+        "capabilities": [
+          "routing",
+          "process-review",
+          "handoff-detection"
+        ]
+      },
+      {
+        "agent_id": "leagentdiary:reflection-editor",
+        "role_in_house": "specialist",
+        "delegation_priority": 80,
+        "capabilities": [
+          "reflection",
+          "summarization",
+          "export-prep"
+        ]
+      }
+    ],
+    "default_agent": "leagentdiary:process-curator",
+    "routing_rules": []
+  },
+  "capabilities": {
+    "domains": [
+      "analysis",
+      "research"
+    ],
+    "input_types": [
+      "text",
+      "file"
+    ],
+    "output_types": [
+      "structured",
+      "text"
+    ],
+    "streaming": true,
+    "tool_calling": true,
+    "max_context_window": 32768
+  },
+  "council_integration": {
+    "council_member_id": "council:leagentdiary",
+    "broadcast_events": [
+      "response.in_progress",
+      "response.output_text.delta",
+      "response.completed",
+      "council.task.completed"
+    ],
+    "subscribe_events": [
+      "council.task.delegated",
+      "council.motion.proposed",
+      "council.vote.required",
+      "council.house.capabilities"
+    ],
+    "voting_weight": 0.1,
+    "delegation_accepts": [
+      "analysis",
+      "research"
+    ]
+  },
+  "workflows": {
+    "flows": []
+  },
+  "endpoints": {
+    "base_url": "http://localhost:8090",
+    "responses": "/v1/responses"
+  },
+  "_envelope": {
+    "created_at": "2026-02-03T13:50:29.824042Z",
+    "updated_at": "2026-03-31T00:00:00Z",
+    "generated_by": "house-orchestrator-generator"
+  }
+}
